@@ -18,7 +18,7 @@ defmodule Doudizhu.GameSup do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
   
-  @doc"""
+  @doc """
   Spawn a new child process with given specification.
   """
   @impl true
