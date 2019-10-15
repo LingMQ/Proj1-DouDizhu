@@ -26,7 +26,9 @@ defmodule Doudizhu.GameServer do
     GenServer.start_link(__MODULE__, game, name: reg(name))
   end
   
-  def start_game(name)
+  def start_game(name) do
+    GenServer.call(reg(name), {:start})
+  end
   
   def playCard(name, player, cards) do
     GenServer.call(reg(name), {:paly, player, cards})
