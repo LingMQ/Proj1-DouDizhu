@@ -1,14 +1,14 @@
 defmodule Doudizhu.GameServer do
   use GenServer
   
-  @doc"""
+  @doc """
   Generate the process query statement with given name.
   """
   def reg(name) do
     {:via, Registry, {Doudizhu.GameReg, name}}
   end
   
-  @doc"""
+  @doc """
   Start a new game process under the supervisor's charge.
   """
   def start(name) do
