@@ -11,7 +11,9 @@ defmodule Doudizhu.Application do
       # Start the Ecto repository
       # Doudizhu.Repo,
       # Start the endpoint when the application starts
-      DoudizhuWeb.Endpoint
+      DoudizhuWeb.Endpoint,
+      Doudizhu.GameSup,
+      Doudizhu.BackupAgent,
       # Starts a worker by calling: Doudizhu.Worker.start_link(arg)
       # {Doudizhu.Worker, arg},
     ]
