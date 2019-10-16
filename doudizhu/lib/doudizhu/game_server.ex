@@ -13,8 +13,8 @@ defmodule Doudizhu.GameServer do
   """
   def start(name) do
     spec = %{
-      id: __MODULE__
-      start: {__MODULE, :start_link, [name]}
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [name]},
       restart: :permanent,
       type: :worker,
     }
@@ -34,5 +34,9 @@ defmodule Doudizhu.GameServer do
     GenServer.call(reg(name), {:paly, player, cards})
   end
   
+  
+  def init(game) do
+    {:ok, game}
+  end
   
 end

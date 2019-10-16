@@ -14,7 +14,7 @@ defmodule Doudizhu.BackupAgent do
   end
   
   def get(name) do 
-    Agent.get __MODULE, fn state -> 
+    Agent.get __MODULE__, fn state -> 
       Map.get(state, name)
     end
   end
