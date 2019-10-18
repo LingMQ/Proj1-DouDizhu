@@ -32,7 +32,7 @@ defmodule Doudizhu.RuleTest do
     assert get_cat([0, 0, 1, 1]) != :trio1
   end
 
-  test "trio2" do
+  test "get_cat for cards larger than 4" do
     get_cat([1, 2, 3, 4, 5])
   end
 end

@@ -61,19 +61,65 @@ defmodule Doudizhu.Rule do
   defp cat_helper(%{2 => [a, b], 4 => [c]}, 8) do
   	{:four2, c}
   end
-   
-  # TODO: airplane sequence 2,3,4,5,6 
-  defp cat_helper() do
-  	
+
+  # airplane sequence with single kiker, 2,3,4,5
+  defp cat_helper(%{1 => a, 3 => b}, l) when rem(l, 4) == 0 do
+  	la = length(a)
+  	lb = length(b)
+  	if la + lb * 3 == l && la == lb do
+  		{:air, 1, lb, b |> Enum.sort |> hd}
+  	else
+  		:illegal
+  	end
   end
 
-  # TODO: airplane sequence with single kiker, 2,3,4,5
+  # airplane sequence with double kiker, 2,3,4
+  defp cat_helper(%{2 => a, 3 => b}, l) when rem(l, 5) == 0 do
+  	la = length(a)
+  	lb = length(b)
+  	if la + lb * 3 == l && la == lb do
+  		{:air, 2, lb, b |> Enum.sort |> hd}
+  	else
+  		:illegal
+  	end
+  end
 
-  # TODO: airplane sequence with double kiker, 2,3,4
+
+  # airplane sequence 2,3,4,5,6 
+  defp cat_helper(%{3 => a}, l) when rem(l, 3) == 0 do
+  	if length(a) * 3 == l do
+  		{:air, 0, length(a), a |> Enum.sort |> hd}
+  	else
+  		:illegal
+  	end
+  end
 
   # TODO: single sequence 5-12 last < 12
+  defp cat_helper(%{1 => a}, l) do
+  	a = Enum.sort(a)
+  	if (length(a) == l 
+  		&& Enum.last(a) < 12
+  		&& Enum.last(a) - hd(a) == l - 1) do
+  		{:schain, length(a), hd(a)}
+  	else
+  		:illegal
+  	end
+  end
 
   # TODO: double sequence 3-10, last < 12
+  defp cat_helper(%{2 => a}, l) do
+  	a = Enum.sort(a)
+  	if (length(a) * 2 == l 
+  		&& Enum.last(a) < 12
+  		&& Enum.last(a) - hd(a) == div(l, 2) - 1) do
+  		{:pchain, length(a), hd(a)}
+  	else
+  		:illegal
+  	end
+  end
 
+  defp cat_helper(_) do
+  	:illegal
+  end
 
 end
