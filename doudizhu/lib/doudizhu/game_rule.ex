@@ -31,9 +31,9 @@ defmodule Doudizhu.Rule do
   def get_cat(cards) do
   	cards
     |> count(%{})
-    |> (&(Enum.group_by(&1, 
-            fn {x, y} -> Map.get(&1, x) end, 
-            fn {x, y} -> x end))).()
+    |> Enum.group_by( 
+            fn {_, y} -> y end, 
+            fn {x, _} -> x end)
     |> cat_helper(length(cards))
   end 
   
@@ -48,7 +48,7 @@ defmodule Doudizhu.Rule do
   end
 
   # trio with 2
-  defp cat_helper(%{2 => [a], 3 => [b]}}, 5) do
+  defp cat_helper(%{2 => [_a], 3 => [b]}, 5) do
   	{:trio2, b}
   end
 
@@ -58,7 +58,7 @@ defmodule Doudizhu.Rule do
   end
 
   # four with two individual pair tickers 
-  defp cat_helper(%{2 => [a, b], 4 => [c]}, 8) do
+  defp cat_helper(%{2 => [_a, _b], 4 => [c]}, 8) do
   	{:four2, c}
   end
 
@@ -98,8 +98,8 @@ defmodule Doudizhu.Rule do
   defp cat_helper(%{1 => a}, l) do
   	a = Enum.sort(a)
   	if (length(a) == l 
-  		&& Enum.last(a) < 12
-  		&& Enum.last(a) - hd(a) == l - 1) do
+  		&& List.last(a) < 12
+  		&& List.last(a) - hd(a) == l - 1) do
   		{:schain, length(a), hd(a)}
   	else
   		:illegal
@@ -110,8 +110,8 @@ defmodule Doudizhu.Rule do
   defp cat_helper(%{2 => a}, l) do
   	a = Enum.sort(a)
   	if (length(a) * 2 == l 
-  		&& Enum.last(a) < 12
-  		&& Enum.last(a) - hd(a) == div(l, 2) - 1) do
+  		&& List.last(a) < 12
+  		&& List.last(a) - hd(a) == div(l, 2) - 1) do
   		{:pchain, length(a), hd(a)}
   	else
   		:illegal

@@ -33,6 +33,7 @@ defmodule Doudizhu.RuleTest do
   end
 
   test "get_cat for cards larger than 4" do
-    get_cat([1, 2, 3, 4, 5])
+    IO.inspect(get_cat([1, 2, 3, 4, 5]))
+    IO.inspect(get_cat([12, 12, 12, 51]))
   end
 end
