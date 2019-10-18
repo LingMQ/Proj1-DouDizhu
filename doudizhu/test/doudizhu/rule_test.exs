@@ -31,4 +31,8 @@ defmodule Doudizhu.RuleTest do
     assert get_cat([10,10, 10, 10]) != :trio1
     assert get_cat([0, 0, 1, 1]) != :trio1
   end
+
+  test "trio2" do
+    get_cat([5, 5, 5, 6, 6])
+  end
 end

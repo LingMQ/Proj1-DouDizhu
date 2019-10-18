@@ -35,7 +35,7 @@ defmodule Doudizhu.Game do
   end
   
   @doc """
-  Assign the 3 extra card to the 
+  Assign the 3 extra card to the landlord
   """
   def assign_lord(game, player) do
     index = game[:players][player]
