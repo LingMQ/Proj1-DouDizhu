@@ -33,6 +33,6 @@ defmodule Doudizhu.RuleTest do
   end
 
   test "trio2" do
-    get_cat([5, 5, 5, 6, 6])
+    get_cat([1, 2, 3, 4, 5])
   end
 end
