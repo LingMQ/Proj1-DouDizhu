@@ -6,7 +6,8 @@ defmodule Doudizhu.Game do
       hands: [],
       last: [],
       last_player: {},
-      base: 0,
+      landlord: nil,
+      base: 3,
     }
   end
   
@@ -23,15 +24,59 @@ defmodule Doudizhu.Game do
     end
   end
   
+  # TODO: check if there is three player
+  @doc """
+  Initialize the game, deal cards to each player and set 3 card for
+   landlord.
+  """
   def init_game(game) do
     %{game | hands: deal_cards()} 
   end
   
+  @doc """
+  Assign the 3 extra card to the 
+  """
   def assign_lord(game, player) do
     index = game[:players][player]
     hands = game[:hands]
     hands = merge(hands, index, 3)
-    Map.put(game, :hands, hands)
+    %{game | hands: hands, landlord: player}
+  end
+  
+  def play_cards(game, player, cards) do
+    if has_card(game, player, cards) 
+    	and validate(game, player, cards) do
+    	# bomb
+      {:ok, update(game, player, cards, false)}
+    else
+      {:error, game}
+    end
+  end
+  
+  defp has_card(%{hands: hands, players: p}, player, cards) do
+    index = p[player]
+    h = Enum.at(hands, index)
+    (length(h) - length(cards)) == length(h -- cards)
+  end
+  
+  defp validate(game, player, cards) do
+    
+  end
+  
+  defp update(game, player, cards, bomb) do
+    index = game[:players][player]
+    hands = game[:hands]
+    |> Enum.at(index)
+    |> (&(&1 -- cards)).()
+    |> (&(List.replace_at(game[:hands], index, &1))).()
+    last = List.replace_at(game[:last], index, cards)
+    if (bomb) do
+      game = Map.put(game, :base, 2 * game[:base])
+      %{game | hands: hands, last: last}
+    else
+      %{game | hands: hands, last: last}
+    end
+    
   end
   
   defp merge(list, a, b) do 
