@@ -30,13 +30,9 @@ defmodule Doudizhu.Rule do
   
   def get_cat(cards) do
     map = count(cards, %{})
-    #map = Enum.group_by(map, &(Map.get(map, &1)))
-    |> IO.inspect
-    |> (&(Enum.group_by(&1, fn {x, y} -> 
-    		Map.get(&1, x) 
-    		|> IO.inspect
-    	end, fn {x, y} -> x end))).()
-    |> IO.inspect
+    |> (&(Enum.group_by(&1, 
+            fn {x, y} -> Map.get(&1, x) end, 
+            fn {x, y} -> x end))).()
   end 
   
   defp count([], m) do
