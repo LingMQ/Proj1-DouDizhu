@@ -1,4 +1,4 @@
-defmodule Doudizhu.DoudizhuTest do
+defmodule Doudizhu.GameTest do
   use ExUnit.Case
   import Doudizhu.Game
   

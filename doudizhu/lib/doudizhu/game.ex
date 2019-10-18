@@ -5,7 +5,8 @@ defmodule Doudizhu.Game do
       players: %{},
       hands: [],
       last: [],
-      last_player: {},
+      last_valid: {},
+      current_player: nil,
       landlord: nil,
       base: 3,
     }
@@ -46,7 +47,7 @@ defmodule Doudizhu.Game do
   def play_cards(game, player, cards) do
     if has_card(game, player, cards) 
     	and validate(game, player, cards) do
-    	# bomb
+    	# TODO: bomb
       {:ok, update(game, player, cards, false)}
     else
       {:error, game}
@@ -61,6 +62,16 @@ defmodule Doudizhu.Game do
   
   defp validate(game, player, cards) do
     
+  end
+  
+  defp preproc(cards) do
+   cards
+   |> Enum.map(fn(x) ->
+        if x < 52 do
+          div(x, 4)
+        end
+      end)
+   |> Enum.sort
   end
   
   defp update(game, player, cards, bomb) do
