@@ -60,13 +60,30 @@ defmodule Doudizhu.RuleTest do
   end
   
   test "air1" do
-    assert get_cat([5, 5, 5, 5, 6, 6, 7, 7]) == {:four2, 1, 5}
-    assert get_cat([3, 3, 4, 4, 6, 6 ,6, 6]) == {:four2, 1, 6}
+    # 2
+    assert get_cat([7, 7, 7, 8, 8, 8, 9, 10]) == {:air1, 2, 7}
+    assert get_cat([3， 4， 7, 7, 7, 8, 8, 8]) == {:air1, 2, 7}
+    # 3
+    assert get_cat([3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 7, 8]) == {:air1, 3, 3}
+    assert get_cat([1， 2， 3, 3, 3, 4, 4, 4, 5, 5, 5， 6]) == {:air1, 3, 3}
+    # 4
+    assert get_cat([3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 8, 9, 10]) 
+    == {:air1, 4, 3}
+    # 5
+    assert get_cat([1, 2, 3, 4, 5, 7, 7, 7, 8, 8, 8, 9, 9, 9, 10, 10, 
+      10, 11, 11, 11]) 
+    == {:air1, 5, 7}
   end
   
   test "air2" do
-    assert get_cat([5, 5, 5, 5, 6, 6, 7, 7]) == {:four2, 1, 5}
-    assert get_cat([3, 3, 4, 4, 6, 6 ,6, 6]) == {:four2, 1, 6}
+    # 2
+    assert get_cat([7, 7, 7, 8, 8, 8, 9, 9, 10, 10]) == {:air2, 2, 7}
+    assert get_cat([0， 0， 1， 1， 7, 7, 7, 8, 8, 8]) == {:air2, 2, 7}
+    # 3
+    assert get_cat([3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 8]) == {:air2, 3, 3}
+    # 4
+    assert get_cat([3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10]) 
+    == {:air2, 4, 3}
   end
 
   test "single chain" do
@@ -78,8 +95,12 @@ defmodule Doudizhu.RuleTest do
   end
   
   test "pair chain" do
-    assert get_cat([5, 5, 5, 5, 6, 6, 7, 7]) == {:four2, 1, 5}
-    assert get_cat([3, 3, 4, 4, 6, 6 ,6, 6]) == {:four2, 1, 6}
+    assert [1..5, 1..5] |> Enum.concat |> Enum.sort |> get_cat 
+    == {:pchain, 5, 1}
+    assert [1..3, 1..3] |> Enum.concat |> Enum.sort |> get_cat 
+    == {:pchain, 3, 1}
+    assert [9..11, 9..11] |> Enum.concat |> Enum.sort |> get_cat 
+    == {:pchain, 3, 9}
   end
   
   test "rocket" do
@@ -91,9 +112,18 @@ defmodule Doudizhu.RuleTest do
   end
   
   test "illegal" do
-   assert get_cat([1, 2]) == :illegal
-   assert get_cat([3, 3, 5]) == :illegal
-   assert get_cat([3, 3, 4, 4]) == :illegal
-   assert get_cat([3, 4, 5, 6]) == :illegal
+    assert get_cat([1, 2]) == :illegal
+    assert get_cat([3, 3, 5]) == :illegal
+    assert get_cat([3, 3, 4, 4]) == :illegal
+    assert get_cat([3, 4, 5, 6]) == :illegal
+    assert get_cat([3, 3, 3, 5 ,6]) == :illegal
+    assert [8..12] |> Enum.concat |> Enum.sort |> get_cat 
+    == :illegal
+    assert [9..12, 9..12] |> Enum.concat |> Enum.sort |> get_cat 
+    == :illegal
+    assert [3, 4, 4, 5, 5, 6, 6] |> Enum.concat |> Enum.sort |> get_cat 
+    == :illegal
+    assert [9..12, 9..12, 9..12] |> Enum.concat |> Enum.sort |> get_cat 
+    == :illegal
   end
 end
