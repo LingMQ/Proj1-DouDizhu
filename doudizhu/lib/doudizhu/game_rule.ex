@@ -148,7 +148,38 @@ defmodule Doudizhu.Rule do
   end
 
   def conquer(:rocket, f2) do
-  	:rocket
+  	{true, :rocket}
   end
+
+  def conquer(:none, f2) do
+  	{false, :none}
+  end
+
+  def conquer(:illegal, f2) do
+  	{false, f2}
+  end
+
+  def conquer({:bomb, len, low}, f2) do
+  	case f2 do
+  		:rocket -> {false, f2}
+  		{:bomb, _l, low2} -> 
+  			if low > low2 do
+	  			{true, {bomb, len, low}}
+	  		else
+	  			{false, f2}
+	  		end 
+  		_ -> {false, f2}
+  	end
+  end
+
+  def conquer({t1, len1, low1}, {t2, len2, low2}) do
+  	if (t1 == t2 && len1 == len2 && low1 > low2) do
+  		{true, {t1, len1, low1}}
+  	else
+  		{false, t2, len2, low2}
+  	end
+  end
+
+
 
 end
