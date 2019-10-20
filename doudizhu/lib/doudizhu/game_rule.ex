@@ -143,8 +143,12 @@ defmodule Doudizhu.Rule do
   end
 
   # Capture whatever other illegal case
-  defp cat_helper(_) do
+  defp cat_helper(_m, _l) do
   	:illegal
+  end
+
+  def conquer(:rocket, f2) do
+  	:rocket
   end
 
 end
