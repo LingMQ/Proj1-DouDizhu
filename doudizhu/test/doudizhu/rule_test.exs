@@ -62,10 +62,10 @@ defmodule Doudizhu.RuleTest do
   test "air1" do
     # 2
     assert get_cat([7, 7, 7, 8, 8, 8, 9, 10]) == {:air1, 2, 7}
-    assert get_cat([3， 4， 7, 7, 7, 8, 8, 8]) == {:air1, 2, 7}
+    assert get_cat([3, 4, 7, 7, 7, 8, 8, 8]) == {:air1, 2, 7}
     # 3
     assert get_cat([3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 7, 8]) == {:air1, 3, 3}
-    assert get_cat([1， 2， 3, 3, 3, 4, 4, 4, 5, 5, 5， 6]) == {:air1, 3, 3}
+    assert get_cat([1, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6]) == {:air1, 3, 3}
     # 4
     assert get_cat([3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 6, 7, 8, 9, 10]) 
     == {:air1, 4, 3}
@@ -78,7 +78,7 @@ defmodule Doudizhu.RuleTest do
   test "air2" do
     # 2
     assert get_cat([7, 7, 7, 8, 8, 8, 9, 9, 10, 10]) == {:air2, 2, 7}
-    assert get_cat([0， 0， 1， 1， 7, 7, 7, 8, 8, 8]) == {:air2, 2, 7}
+    assert get_cat([0, 0, 1, 1, 7, 7, 7, 8, 8, 8]) == {:air2, 2, 7}
     # 3
     assert get_cat([3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 7, 8, 8]) == {:air2, 3, 3}
     # 4
@@ -121,8 +121,7 @@ defmodule Doudizhu.RuleTest do
     == :illegal
     assert [9..12, 9..12] |> Enum.concat |> Enum.sort |> get_cat 
     == :illegal
-    assert [3, 4, 4, 5, 5, 6, 6] |> Enum.concat |> Enum.sort |> get_cat 
-    == :illegal
+    assert [3, 4, 4, 5, 5, 6, 6] |> get_cat == :illegal
     assert [9..12, 9..12, 9..12] |> Enum.concat |> Enum.sort |> get_cat 
     == :illegal
   end

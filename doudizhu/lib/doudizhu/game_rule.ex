@@ -100,9 +100,10 @@ defmodule Doudizhu.Rule do
   defp cat_helper(%{2 => a, 3 => b}, l) when rem(l, 5) == 0 do
   	la = length(a)
   	lb = length(b)
-  	if la + lb * 3 == l && la == lb  && Enum.max(b) < 12 do
+  	if la * 2 + lb * 3 == l && la == lb  && Enum.max(b) < 12 do
   		{:air2, lb, b |> Enum.sort |> hd}
   	else
+  	
   		:illegal
   	end
   end
