@@ -176,7 +176,7 @@ defmodule Doudizhu.Rule do
   	if (t1 == t2 && len1 == len2 && low1 > low2) do
   		{true, {t1, len1, low1}}
   	else
-  		{false, t2, len2, low2}
+  		{false, {t2, len2, low2}}
   	end
   end
 
