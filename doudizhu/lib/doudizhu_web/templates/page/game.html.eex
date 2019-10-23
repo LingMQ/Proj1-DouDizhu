@@ -1,0 +1,8 @@
+<script>
+ window.gameName = "<%= @name %>";
+</script>
+
+<h1>Fight Against Landlord Game: <%= @name %></h1>
+<div id="root">
+  React component loading...
+</div>
