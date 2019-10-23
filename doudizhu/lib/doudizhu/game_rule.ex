@@ -147,12 +147,12 @@ defmodule Doudizhu.Rule do
   	:illegal
   end
 
-  def conquer(:rocket, f2) do
+  def conquer(:rocket, _f2) do
   	{true, :rocket}
   end
 
   def conquer(:none, f2) do
-  	{false, :none}
+  	{false, f2}
   end
 
   def conquer(:illegal, f2) do
@@ -164,7 +164,7 @@ defmodule Doudizhu.Rule do
   		:rocket -> {false, f2}
   		{:bomb, _l, low2} -> 
   			if low > low2 do
-	  			{true, {bomb, len, low}}
+	  			{true, {:bomb, len, low}}
 	  		else
 	  			{false, f2}
 	  		end 

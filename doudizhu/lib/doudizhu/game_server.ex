@@ -66,7 +66,7 @@ defmodule Doudizhu.GameServer do
   @doc """
   Play the cards for the given player, return the updated game state
   """
-  def play_card(name, player, cards) do
+  def play_cards(name, player, cards) do
     GenServer.call(reg(name), {:play, name, player, cards})
   end
 
@@ -118,11 +118,16 @@ defmodule Doudizhu.GameServer do
   end
 
   def handle_call({:play, name, player, cards}, _from, game) do
-    case Game.play_cards(game, player, cards) do
-      {:ok, game} -> BackupAgent.put(name, game)
-                     {:reply, game, game}
-      {:error, game} -> {:reply, :error, game}
+    if player == Game.current_player(game) do
+      case Game.play_cards(game, cards) do
+        {:ok, game} -> BackupAgent.put(name, game)
+                       {:reply, game, game}
+        {:error, game} -> {:reply, :error, game}
+      end
+    else
+      {:reply, :error, game}
     end
+    
   end
 
   def handle_call({:terminate, name}, _from, game) do

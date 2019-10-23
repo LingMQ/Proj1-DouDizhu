@@ -12,7 +12,7 @@ defmodule Doudizhu.Game do
   def new_state do
     %{
       hands: [[], [], [], []],
-      last:[[], [], []],
+      last: [[], [], []],
       last_valid: {},
       current_player: nil,
       current_round: 0,
@@ -26,8 +26,8 @@ defmodule Doudizhu.Game do
   """
   def add_player(game, player) do
     players = game[:players]
-    if (map_size(p) < 3) do
-      p = %{index: map_size(players), ready: false, total:0}
+    if (map_size(players) < 3) do
+      p = %{index: map_size(players), ready: false, total: 0}
       game = %{game | players: Map.put(players, player, p)}
       {:ok, game}
     else
@@ -40,10 +40,10 @@ defmodule Doudizhu.Game do
   start the game directly.
   """
   def ready(game, player) do
-    players = game[:players]
-    |> Map.put(player, %{players[player] | ready: true})
+    p = game[:players][player]
+    players = Map.put(game[:players], player, %{p | ready: true})
 
-    if Enum.reduce(players, false, fn {_, y}, acc -> y[:ready] && acc end) do
+    if Enum.reduce(players, true, fn {_, y}, acc -> y[:ready] && acc end) do
       {:go, Map.put(game, :players, players)}
     else
       {:ready, Map.put(game, :players, players)}
@@ -56,8 +56,8 @@ defmodule Doudizhu.Game do
   Return the new game state
   """
   def init_game(game) do
-    new_state
-    |> Map.put(:hands, deal_cards)
+    new_state()
+    |> Map.put(:hands, deal_cards())
     |> Map.put(:bid, [])
     |> (&(Map.put(game, :state, &1))).()
   end
@@ -81,17 +81,30 @@ defmodule Doudizhu.Game do
   def assign_lord(game) do
     # pick a landlord
     state = game[:state]
-    bid = if game[:winner] == nil, do: state[:bid], 
-          else: state[:bid] ++ [game[:winner]]
+    bid = cond do
+      state[:bid] == 0 -> game |> Map.get(:players) |> Map.keys
+      game[:winner] == nil -> state[:bid]
+      !(game[:winner] in state[:bid]) -> state[:bid]
+      true -> state[:bid] ++ [game[:winner]]
+    end
     ll = Enum.take_random(bid, 1)
+         |> hd
     # Assign 3 cards
     index = game[:players][ll][:index]
     hands = state[:hands]
     hands = merge(hands, index, 3)
     state = %{state | hands: hands, 
                       landlord: ll, 
-                      current_player: ll}
-    %{game | state: state, bid: []}
+                      current_player: ll,
+                      bid: []}
+    %{game | state: state}
+  end
+
+  def current_player(game) do
+    case game[:state] do
+      nil -> nil
+      s -> s[:current_player] 
+    end
   end
 
   # if the user does not give any card, assume player is 
@@ -102,7 +115,7 @@ defmodule Doudizhu.Game do
     case state[:last_valid] do
       {} -> {:error, game}
       {^player, _} -> {:error, game}
-      {p, f} -> 
+      _ -> 
         # next round, shift current player
         state = %{state | current_player: next_player(game[:players], player),
                           current_round: state[:current_round] + 1}
@@ -112,11 +125,10 @@ defmodule Doudizhu.Game do
   
   # if the user feed cards, assume the player is the current player
   def play_cards(game, cards) do
-    cards = preproc(cards)
     state = game[:state]
     player = state[:current_player]
     if has_card(game, player, cards) do
-    	case validate(game, cards) do
+    	case validate(game, preproc(cards)) do
         {true, feature} -> 
           {:ok, update(game, player, cards, feature)}
         {false, _} -> {:error, game}
@@ -140,25 +152,25 @@ defmodule Doudizhu.Game do
            landlord = Map.get(game[:players], game[:state][:landlord])
            p = game[:players]
            |> Enum.map(fn {k, v} -> # {player, %{index:, ready:, total:} 
-                {k, update_score({w, v, base, landlord)} 
+                {k, update_score(w, v, base, landlord)} 
               end)
            |> Map.new
            winner = game[:players] 
-           |> Enum.find(fn {k, v} -> v[:index] == wi end)
+           |> Enum.find(fn {_, v} -> v[:index] == wi end)
            |> elem(0)
-           {true, %{player: p, winner: winner}}
+           {true, %{game | player: p, winner: winner}}
     end
   end
 
   # calculate the total score, return a new information map
   # %{index: , ready: , total:}
   defp update_score(winner, info, base, landlord) do
-    if winner != landlord, do: base = -base
+    base = if winner != landlord, do: -base, else: base
     case info[:index] do
-      ^landlord -> {index: landlord, 
+      ^landlord -> %{index: landlord, 
                     ready: false, 
                     total: info[:total] + base * 2}
-      a -> {index: a, 
+      a -> %{index: a, 
             ready: false, 
             total: info[:total] - base}
     end
@@ -168,7 +180,7 @@ defmodule Doudizhu.Game do
   defp next_player(players, player) do
     index = rem(players[player][:index] + 1, 3)
     players 
-    |> Enum.find(fn {k, v} -> v[:index] == index end)
+    |> Enum.find(fn {_, v} -> v[:index] == index end)
     |> elem(0)
   end
   
@@ -184,11 +196,12 @@ defmodule Doudizhu.Game do
   # return {true/false, feature of the lastest valid playing}
   defp validate(game, cards) do
     state = game[:state]
+    player = state[:current_player]
     case state[:last_valid] do
       {} -> {true, Rule.get_cat(cards)}
-      {^players, _} -> {true, Rule.get_cat(cards)}
+      {^player, _} -> {true, Rule.get_cat(cards)}
       {_, f} -> cards 
-                |> get_cat 
+                |> Rule.get_cat 
                 |> Rule.conquer(f)
     end
   end
@@ -215,6 +228,7 @@ defmodule Doudizhu.Game do
     |> Enum.at(index)
     |> (&(&1 -- cards)).()
     |> (&(List.replace_at(state[:hands], index, &1))).()
+    |> IO.inspect
     last = List.replace_at(state[:last], index, cards)
     base = case feature do
       :rocket -> 2 * state[:base]
@@ -225,7 +239,7 @@ defmodule Doudizhu.Game do
                       last: last,
                       base: base,
                       current_player: next_player(game[:players], player),
-                      current_round: state[:current_round] + 1},
+                      current_round: state[:current_round] + 1,
                       last_valid: {player, feature},
             }
     %{game | state: state}
@@ -242,6 +256,7 @@ defmodule Doudizhu.Game do
     |> Enum.concat
     |> Enum.shuffle
     |> Enum.chunk_every(17)
+    |> Enum.map(&Enum.sort/1)
   end
 
 end
