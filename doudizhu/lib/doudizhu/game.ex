@@ -11,7 +11,7 @@ defmodule Doudizhu.Game do
 
   def new_state do
     %{
-      hands: [[], [], []],
+      hands: [[], [], [], []],
       last:[[], [], []],
       last_valid: {},
       current_player: nil,
@@ -126,24 +126,41 @@ defmodule Doudizhu.Game do
     end
   end
 
-  # TODO: Function for update points and winner
   # check whether there is a player played all his card
-  # if it is, update the winner, points
+  # If it is, return a new game state with the updated winner,
+  # player information, which is a state before preparing for a new game.
   def terminated(game) do
-    winner = game
-             |> Map.get(:state)
-             |> Map.get(:hands)
-             |> Enum.find_index(&Enum.empty?/1)
-    case winner do
+    wi = game
+        |> Map.get(:state)
+        |> Map.get(:hands)
+        |> Enum.find_index(&Enum.empty?/1)
+    case wi do
       nil -> {false, game}
       w -> base = game[:state][:base]
-           landlord = game[:state][:landlord]
-           game[:players]
-           |> Enum.map(fn {k, v} -> 
-                {k, Map.put(v, :total, 
-                  if v[:index] == w, do: v[:total] + base)} 
+           landlord = Map.get(game[:players], game[:state][:landlord])
+           p = game[:players]
+           |> Enum.map(fn {k, v} -> # {player, %{index:, ready:, total:} 
+                {k, update_score({w, v, base, landlord)} 
               end)
            |> Map.new
+           winner = game[:players] 
+           |> Enum.find(fn {k, v} -> v[:index] == wi end)
+           |> elem(0)
+           {true, %{player: p, winner: winner}}
+    end
+  end
+
+  # calculate the total score, return a new information map
+  # %{index: , ready: , total:}
+  defp update_score(winner, info, base, landlord) do
+    if winner != landlord, do: base = -base
+    case info[:index] do
+      ^landlord -> {index: landlord, 
+                    ready: false, 
+                    total: info[:total] + base * 2}
+      a -> {index: a, 
+            ready: false, 
+            total: info[:total] - base}
     end
   end
 
