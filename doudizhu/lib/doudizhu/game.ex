@@ -195,7 +195,7 @@ defmodule Doudizhu.Game do
            winner = game[:players] 
            |> Enum.find(fn {_, v} -> v[:index] == wi end)
            |> elem(0)
-           {true, %{game | player: p, winner: winner}}
+           {true, %{game | players: p, winner: winner}}
     end
   end
 

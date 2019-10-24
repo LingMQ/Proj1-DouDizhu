@@ -43,7 +43,7 @@ defmodule DoudizhuWeb.RoomChannel do
 		case GameServer.ready(name, user) do
 			{:ready, game} -> broadcast!(socket, "user_ready", game)
 			{:go, game} -> broadcast!(socket, "start_bid", game)
-						   Process.send_after(self(), {:assign, name}, 30000)
+						   Process.send_after(self(), {:assign, name}, 15000)
 		end
 		{:noreply, socket}
 	end
@@ -71,6 +71,7 @@ defmodule DoudizhuWeb.RoomChannel do
 		 		{true, game} ->  broadcast!(socket, "terminate", game)
 			end
 		end
+		{:noreply, socket}
 	end
 
 	def handle_info({:after_join, game}, socket) do
