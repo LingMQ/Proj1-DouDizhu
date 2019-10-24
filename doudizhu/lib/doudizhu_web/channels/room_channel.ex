@@ -22,17 +22,31 @@ defmodule DoudizhuWeb.RoomChannel do
 							|> assign(:name, name) 
 							|> assign(:user, user)
 
-					IO.inspect(game)		
 					send(self(), {:after_join, game})
 
 					{:ok, socket}
 		end
 	end
 
+	def handle_out("start_bid", view, socket) do
+		game = view["game"]
+		push(socket, "update", 
+			Map.put(view, "game", 
+				Game.client_view(game, socket.assigns[:user])))
+		{:noreply, socket}
+	end
+
+	def handle_out("update", view, socket) do
+		game = view["game"]
+		push(socket, "update", 
+			Map.put(view, "game", 
+				Game.client_view(game, socket.assigns[:user])))
+		{:noreply, socket}
+	end
 
 	def handle_out(msg, game, socket) do
 		push(socket, msg, 
-			Game.client_view(game, socket.assigns[:user]))
+			%{"game" => Game.client_view(game, socket.assigns[:user])})
 		{:noreply, socket}
 	end
 
@@ -42,8 +56,8 @@ defmodule DoudizhuWeb.RoomChannel do
 		user = socket.assigns[:user]
 		case GameServer.ready(name, user) do
 			{:ready, game} -> broadcast!(socket, "user_ready", game)
-			{:go, game} -> broadcast!(socket, "start_bid", game)
-						   Process.send_after(self(), {:assign, name}, 30000)
+			{:go, game} -> broadcast_limited("start_bid", 
+				{:assign, name}, game, 15, socket)
 		end
 		{:noreply, socket}
 	end
@@ -63,13 +77,10 @@ defmodule DoudizhuWeb.RoomChannel do
 			{:reply, {:error, %{reason: "Cannot play in this way!"}}, socket}
 		else
 			case GameServer.terminate(name) do
-		 		{false, game} -> broadcast!(socket, "update", game)
-								 Process.send_after(
-								 	self(), 
-									{:next, name, Game.current_round(game)}, 
-									30000)
+		 		{false, game} -> broadcast_limited("update", 
+					{:next, name, Game.current_round(game)}, game, 30, socket)
+
 		 		{true, game} ->  broadcast!(socket, "terminate", game)
-		 			IO.inspect(game)
 			end
 		end
 		{:noreply, socket}
@@ -82,8 +93,8 @@ defmodule DoudizhuWeb.RoomChannel do
 
 	def handle_info({:assign, name}, socket) do
 		game = GameServer.assign_landlord(name)
-		       |> IO.inspect
-		broadcast!(socket, "update", game)
+		broadcast_limited("update", 
+			{:next, name, Game.current_round(game)}, game, 30, socket)
 		{:noreply, socket}
 	end
 
@@ -94,13 +105,17 @@ defmodule DoudizhuWeb.RoomChannel do
 		if current_round == cr do
 			GameServer.naive_play(name)
 			case GameServer.terminate(name) do
-		 		{false, game} -> broadcast!(socket, "update", game)
-					Process.send_after(self(), 
-						{:next, name, Game.current_round(game)}, 30000)
+		 		{false, game} -> broadcast_limited("update", 
+					{:next, name, Game.current_round(game)}, game, 30, socket)
 		 		{true, game} ->  broadcast!(socket, "terminate", game)
 			end
 		end
 		{:noreply, socket}
+	end
+
+	defp broadcast_limited(msg, self_msg, game, time, socket) do
+		broadcast!(socket, msg, %{"game" => game, "time" => time})
+		Process.send_after(self(), send_after, time * 1000)
 	end
 
 
