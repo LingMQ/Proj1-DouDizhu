@@ -80,11 +80,11 @@ class Game extends React.Component {
 		this.setState(view.game);
 	}
 
-	// addGamePlayer() {
-	// 	//TODO work on the channel side for this ???
-	// 	this.channel.push("addPlayer", {})
-	// 		.receive("ok", this.get_view.bind(this))
-	// }
+	addGamePlayer() {
+		//TODO work on the channel side for this ???
+		this.channel.push("addPlayer", {})
+			.receive("ok", this.get_view.bind(this))
+	}
 }
 
 function OpponentDealCard(props) {
