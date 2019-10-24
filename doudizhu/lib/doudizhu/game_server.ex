@@ -3,6 +3,7 @@ defmodule Doudizhu.GameServer do
 
   alias Doudizhu.BackupAgent
   alias Doudizhu.Game
+  alias Doudizhu.Chat
   
   @doc """
   Generate the process query statement with given name.
@@ -25,7 +26,8 @@ defmodule Doudizhu.GameServer do
   end
   
   def start_link(name) do
-    game = Doudizhu.BackupAgent.get(name) || Doudizhu.Game.new()
+    game = BackupAgent.get(name) 
+      || Game.new() |> Map.merge(Chat.new())
     GenServer.start_link(__MODULE__, game, name: reg(name))
   end
 
@@ -34,10 +36,26 @@ defmodule Doudizhu.GameServer do
   @doc """
   Add a new player to current game if there is no more than 
   3 player in this room
-  Return game states if success, :error otherwise.
+  Return {:ok, game} states if success, :error otherwise.
   """
   def add_player(name, player) do
     GenServer.call(reg(name), {:add, name, player})
+  end
+
+  @doc """
+  Add a new observer to current game 
+  Return game states if success, :error otherwise.
+  """
+  def add_observer(name, observer) do
+    GenServer.call(reg(name), {:add_ob, name, observer})
+  end
+
+  def add_text(name, observer, text) do
+    GenServer.call(reg(name), {:add_text, name, observer, text})
+  end
+
+  def set_player(name, observer, player) do
+    GenServer.call(reg(name), {:set_p, name, observer, player})
   end
 
   @doc """
@@ -96,8 +114,32 @@ defmodule Doudizhu.GameServer do
   def handle_call({:add, name, player}, _from, game) do
     case Game.add_player(game, player) do
       {:ok, game} -> BackupAgent.put(name, game)
-                     {:reply, game, game}
+                     {:reply, {:ok, game}, game}
       {:error, game} -> {:reply, :error, game}
+    end
+  end
+
+  def handle_call({:add_ob, name, observer}, _from, game) do
+    case Chat.add_observer(game, observer) do
+      {:ok, game} -> BackupAgent.put(name, game)
+                     {:reply, {:ok, game}, game}
+      {:error, reason} -> {:reply, {:error, reason}, game}
+    end
+  end
+
+  def handle_call({:add_text, name, ob, text}, _from, game) do
+    case Chat.add_text(game, ob, text) do
+      {:error, reason} -> {:reply, {:error, reason}, game}
+      {:ok, game} -> BackupAgent.put(name, game)
+        {:reply, {:ok, game}, game}
+    end
+  end
+
+  def handle_call({:add_text, name, ob, p}, _from, game) do
+    case Chat.set_player(game, ob, p) do
+      {:error, reason} -> {:reply, {:error, reason}, game}
+      {:ok, game} -> BackupAgent.put(name, game)
+        {:reply, {:ok, game}, game}
     end
   end
 

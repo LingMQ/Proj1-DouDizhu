@@ -17,36 +17,51 @@ defmodule DoudizhuWeb.RoomChannel do
 		user = payload["user"]
 		GameServer.start(name)
 		case GameServer.add_player(name, user) do
-			:error -> {:error, %{reason: "This room is full!"}}
-			game -> socket = socket 
+			:error -> 
+				case GameServer.add_observer(name, user) do
+					{:error, reason} -> {:error, %{reason: reason}}	
+					{:ok, game} -> 
+						socket = socket 
+						|> assign(:name, name) 
+						|> assign(:user, user)
+						{:ok, 
+						%{"game" => Game.client_view(game, Game.get_player(game, user))}, 
+						socket}
+				end
+			{:ok, game} -> socket = socket 
 							|> assign(:name, name) 
 							|> assign(:user, user)
-
-					send(self(), {:after_join, game})
-
-					{:ok, socket}
+				send(self(), {:after_join, game})
+				{:ok, socket}
 		end
 	end
 
 	def handle_out("start_bid", view, socket) do
 		game = view["game"]
-		push(socket, "update", 
-			Map.put(view, "game", 
-				Game.client_view(game, socket.assigns[:user])))
+		{t, u} = view_user(game, socket.assigns[:user])
+		push(socket, "start_bid", 
+			view 
+			|> Map.put("game", Game.client_view(game, u))
+			|> Map.put("type", t))
 		{:noreply, socket}
 	end
 
 	def handle_out("update", view, socket) do
 		game = view["game"]
+		{t, u} = view_user(game, socket.assigns[:user])
 		push(socket, "update", 
-			Map.put(view, "game", 
-				Game.client_view(game, socket.assigns[:user])))
+			view 
+			|> Map.put("game", Game.client_view(game, u))
+			|> Map.put("type", t))
 		{:noreply, socket}
 	end
 
 	def handle_out(msg, game, socket) do
-		push(socket, msg, 
-			%{"game" => Game.client_view(game, socket.assigns[:user])})
+		{t, u} = view_user(game, socket.assigns[:user])
+		push(socket, "update", 
+			%{} 
+			|> Map.put("game", Game.client_view(game, u))
+			|> Map.put("type", t))
 		{:noreply, socket}
 	end
 
@@ -54,10 +69,14 @@ defmodule DoudizhuWeb.RoomChannel do
 	def handle_in("ready", _, socket) do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
-		case GameServer.ready(name, user) do
-			{:ready, game} -> broadcast!(socket, "user_ready", game)
-			{:go, game} -> broadcast_limited("start_bid", 
-				{:assign, name}, game, 15, socket)
+		game = GameServer.peek(name)
+		{t, u} = view_user(game, socket.assigns[:user])
+		if t == "p" do
+			case GameServer.ready(name, user) do
+				{:ready, game} -> broadcast!(socket, "user_ready", game)
+				{:go, game} -> broadcast_limited("start_bid", 
+					{:assign, name}, game, 15, socket)
+			end
 		end
 		{:noreply, socket}
 	end
@@ -65,22 +84,29 @@ defmodule DoudizhuWeb.RoomChannel do
 	def handle_in("bid", _, socket) do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
-		game = GameServer.bid(name, user)
-		broadcast!(socket, "user_bid", game)
+		game = GameServer.peek(name)
+		{t, u} = view_user(game, socket.assigns[:user])
+		if t == "p" do
+			broadcast!(socket, "user_bid", GameServer.bid(name, user))
+		end
 		{:noreply, socket}
 	end
 
 	def handle_in("play", %{"cards" => cards}, socket) do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
-		if GameServer.play_cards(name, user, cards) == :error do
-			{:reply, {:error, %{reason: "Cannot play in this way!"}}, socket}
-		else
-			case GameServer.terminate(name) do
-		 		{false, game} -> broadcast_limited("update", 
-					{:next, name, Game.current_round(game)}, game, 30, socket)
+		game = GameServer.peek(name)
+		{t, u} = view_user(game, socket.assigns[:user])
+		if t == "p" do
+			if GameServer.play_cards(name, user, cards) == :error do
+				{:reply, {:error, %{reason: "Cannot play in this way!"}}, socket}
+			else
+				case GameServer.terminate(name) do
+			 		{false, game} -> broadcast_limited("update", 
+						{:next, name, Game.current_round(game)}, game, 30, socket)
 
-		 		{true, game} ->  broadcast!(socket, "terminate", game)
+			 		{true, game} ->  broadcast!(socket, "terminate", game)
+				end
 			end
 		end
 		{:noreply, socket}
@@ -116,6 +142,15 @@ defmodule DoudizhuWeb.RoomChannel do
 	defp broadcast_limited(msg, self_msg, game, time, socket) do
 		broadcast!(socket, msg, %{"game" => game, "time" => time})
 		Process.send_after(self(), self_msg, time * 1000)
+	end
+
+	defp view_user(game, user) do
+		p = game[:players]
+		if Map.has_key?(p, user) do
+			{"p", user}
+		else 
+			{"o", game[:observers][user]}
+		end
 	end
 
 
