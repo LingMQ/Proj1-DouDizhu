@@ -53,6 +53,7 @@ class Game extends React.Component {
 		if (view.time) {
 			this.setState(view.game);
 			this.setState({time: view.time});
+			clearInterval(timeId);
 			this.timeId = setInterval(() => this.tick(), 1000);
 			console.log(this.timeId);
 		} else {
@@ -63,6 +64,7 @@ class Game extends React.Component {
 	tick() {
 		let time = this.state.time - 1;
 		if (time < 1) {
+			console.log("clearInterval!")
 			clearInterval(this.timeId);
 		}
 		this.setState(_.extend(this.state, {time: time}));
