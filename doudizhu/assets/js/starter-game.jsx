@@ -169,8 +169,7 @@ function AHandOfCard(props) {
 function Card(props) {
 	let cardUrl = (require("./card").dict)[props.value];
 	if (props.select) {
-		return 
-		(<div onClick={props.onSelect}>
+		return (<div onClick={props.onSelect}>
 			<img src={cardUrl} width="85" height="160"/>
 			</div>);
 	} else {
