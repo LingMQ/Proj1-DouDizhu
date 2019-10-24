@@ -2,6 +2,7 @@ defmodule DoudizhuWeb.RoomChannel do
 	use DoudizhuWeb, :channel
 
 	alias Doudizhu.Game
+	alias Doudizhu.Chat
 	alias Doudizhu.GameServer
 
 	intercept [
@@ -25,7 +26,7 @@ defmodule DoudizhuWeb.RoomChannel do
 						|> assign(:name, name) 
 						|> assign(:user, user)
 						{:ok, 
-						%{"game" => Game.client_view(game, Game.get_player(game, user))}, 
+						%{"game" => Game.client_view(game, Chat.get_player(game, user))}, 
 						socket}
 				end
 			{:ok, game} -> socket = socket 
