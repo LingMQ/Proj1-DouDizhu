@@ -157,6 +157,7 @@ function AHandOfCard(props) {
 	console.log(props.selected.includes(1))
 	let s = _.concat(props.selected, [])
 	for(let i = 0; i < props.hands.length; i++) {
+		console.log(props.hands[i]);
 		let f = s.includes(props.hands[i]);
 		h.push(<Card key={props.hands[i]} 
 			value={props.hands[i]} 
