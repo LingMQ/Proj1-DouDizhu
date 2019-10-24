@@ -22,7 +22,10 @@ defmodule DoudizhuWeb.RoomChannel do
 			game -> socket = socket 
 							|> assign(:name, name) 
 							|> assign(:user, user)
-					broadcast!(socket, "user_joined", game)
+
+					send(self, {:after_join, game})
+
+
 					{:ok, socket}
 		end
 	end
@@ -69,6 +72,11 @@ defmodule DoudizhuWeb.RoomChannel do
 		 		{true, game} ->  broadcast!(socket, "terminate", game)
 			end
 		end
+	end
+
+	def handle_info({:after_join, game}, socket) do
+		broadcast!(socket, "user_joined", game)
+		{:noreply, socket}
 	end
 
 	def handle_info({:assign, name}, socket) do
