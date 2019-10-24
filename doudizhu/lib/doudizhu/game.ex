@@ -110,7 +110,7 @@ defmodule Doudizhu.Game do
     # Assign 3 cards
     index = game[:players][ll][:index]
     hands = state[:hands]
-    hands = merge(hands, index, 3) |> Enum.sort
+    hands = merge(hands, index, 3) 
     state = %{state | hands: hands, 
                       landlord: ll, 
                       current_player: ll,
@@ -323,7 +323,7 @@ defmodule Doudizhu.Game do
   defp merge(list, a, b) do 
     l1 = Enum.at(list, a)
     l2 = Enum.at(list, b)
-    List.replace_at(list, a, l1 ++ l2)
+    List.replace_at(list, a, Enum.sort(l1 ++ l2))
   end
   
   defp deal_cards() do

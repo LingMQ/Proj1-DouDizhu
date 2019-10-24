@@ -23,7 +23,7 @@ defmodule DoudizhuWeb.RoomChannel do
 							|> assign(:user, user)
 
 					IO.inspect(game)		
-					send(self, {:after_join, game})
+					send(self(), {:after_join, game})
 
 					{:ok, socket}
 		end
@@ -67,7 +67,7 @@ defmodule DoudizhuWeb.RoomChannel do
 								 Process.send_after(
 								 	self(), 
 									{:next, name, Game.current_round(game)}, 
-									30000)
+									15000)
 		 		{true, game} ->  broadcast!(socket, "terminate", game)
 			end
 		end
