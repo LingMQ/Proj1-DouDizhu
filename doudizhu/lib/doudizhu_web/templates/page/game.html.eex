@@ -1,8 +1,8 @@
 <script>
  window.gameName = "<%= @name %>";
+ window.playerName = "<%= @player%>";
 </script>
-
-<h1>Fight Against Landlord Game: <%= @name %></h1>
+<body background=>
 <div id="root">
   React component loading...
 </div>
