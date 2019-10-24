@@ -12,7 +12,7 @@ defmodule Doudizhu.Chat do
 	for the observer to watch
 	"""
 	def add_observer(game, ob) do
-		if Map.has_key?(game[:players], ob) do
+		if !Map.has_key?(game[:players], ob) do
 			obs = game[:observers]
 			|> Map.put(ob, game[:players] |> Map.keys |> hd)
 			{:ok, %{game | observers: obs}}
