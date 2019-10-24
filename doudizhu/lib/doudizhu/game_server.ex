@@ -27,7 +27,7 @@ defmodule Doudizhu.GameServer do
   
   def start_link(name) do
     game = BackupAgent.get(name) 
-      || Game.new() |> Map.merge(Chat.new())
+      || (Game.new() |> Map.merge(Chat.new()))
     GenServer.start_link(__MODULE__, game, name: reg(name))
   end
 
