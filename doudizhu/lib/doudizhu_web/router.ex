@@ -17,6 +17,8 @@ defmodule DoudizhuWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/game/:name", PageController, :game
+    post "/game", PageController, :game
   end
 
   # Other scopes may use custom stacks.

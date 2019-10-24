@@ -1,12 +1,10 @@
-<script>
- window.gameName = "<%= @name %>";
-</script>
 
 <div class="row">
   <div class="column">
-    <h1>Fight Aginst Landlord: <%= @name %></h1>
-    <div id="root">
-      React component loading...
-    </div>
+    <h1>Fight Against Landlord </h1>
+      <%= form_for @conn, "/game", fn f -> %>
+        			<p>Enter a room name: <%= text_input f, :name, placeholder: "demo" %></p>
+        			<p><%= submit "Join Room"%></p>
+        		<% end %>
   </div>
 </div>
