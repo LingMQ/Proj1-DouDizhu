@@ -63,16 +63,13 @@ class Game extends React.Component {
 	}
 
 	onSelect(card) {
-		console.log(card);
 		let s = this.state.selected.concat([]);
-		console.log(s);
 		if (s.includes(card)) {
 			index = s.indexOf(card);
 			s.splice(index, 1);
 		} else {
-			s = s.push(card);
+			s.push(card);
 		}
-		console.log(s);
 		this.setState(_.extend(this.state, {selected: s}));
 	}
 
