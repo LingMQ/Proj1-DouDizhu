@@ -11,11 +11,6 @@ class Game extends React.Component {
 	constructor(props) {
 		super(props);
 		this.channel = props.channel;
-		this.channel.join()
-				.receive("ok", () => {console.log("ok!")})
-				// TODO: display the reason
-				.receive("error", resp => {console.log("Can't join!", resp)});
-
 		this.state = {
 			// phase: null,
 			landlord: null,
@@ -26,8 +21,16 @@ class Game extends React.Component {
 			middle: {},
 			selected: [],
 			base: 3,
+			score: [1, 2, 3]
 			// TODO: state for timer
 		};
+		
+		this.channel.join()
+				.receive("ok", () => {console.log(this.state)})
+				// TODO: display the reason
+				.receive("error", resp => {console.log("Can't join!", resp)});
+
+		
 
 		// this.channel.on("user_joined", this.get_view.bind(this));
 		// this.channel.on("user_ready", this.get_view.bind(this));
@@ -74,7 +77,7 @@ class Game extends React.Component {
 
 
 	get_view(view) {
-		this.setState(view);
+		this.setState(view.game);
 	}
 
 	// addGamePlayer() {

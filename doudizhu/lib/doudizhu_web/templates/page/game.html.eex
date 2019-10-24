@@ -2,7 +2,6 @@
  window.gameName = "<%= @name %>";
  window.playerName = "<%= @player%>";
 </script>
-<body background=>
 <div id="root">
   React component loading...
 </div>

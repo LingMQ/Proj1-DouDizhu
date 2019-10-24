@@ -19,7 +19,9 @@ import $ from "jquery";
 import game_init from  "./starter-game"
 
 $(() => {
-	let root = $('#root')[0];
+	let root = document.getElementById('root')
+	if (root) {
 	let channel = socket.channel("room:" + window.gameName, {"user": window.playerName});
 	game_init(root, channel);
+	}
 });
