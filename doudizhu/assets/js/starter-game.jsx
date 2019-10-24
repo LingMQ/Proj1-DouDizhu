@@ -69,8 +69,7 @@ class Game extends React.Component {
 	onSelect(card) {
 		let s = this.state.selected.concat([]);
 		if (s.includes(card)) {
-			index = s.indexOf(card);
-			s.splice(index, 1);
+			s.splice(s.indexOf(card), 1);
 		} else {
 			s.push(card);
 		}
@@ -160,10 +159,8 @@ function MyDealCard(props) {
 
 function AHandOfCard(props) {
 	let h = [];
-	console.log(props.selected.includes(1))
 	let s = _.concat(props.selected, [])
 	for(let i = 0; i < props.hands.length; i++) {
-		console.log(props.hands[i]);
 		let f = s.includes(props.hands[i]);
 		h.push(<Card key={props.hands[i]} 
 			value={props.hands[i]} 

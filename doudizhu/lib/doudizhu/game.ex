@@ -110,7 +110,7 @@ defmodule Doudizhu.Game do
     # Assign 3 cards
     index = game[:players][ll][:index]
     hands = state[:hands]
-    hands = merge(hands, index, 3)
+    hands = merge(hands, index, 3) |> Enum.sort
     state = %{state | hands: hands, 
                       landlord: ll, 
                       current_player: ll,

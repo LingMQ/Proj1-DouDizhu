@@ -143,9 +143,9 @@ defmodule Doudizhu.GameServer do
 
   def handle_call({:terminate, name}, _from, game) do
     case Game.terminated(game) do
-      {false, game} -> {:reply, false, game}
+      {false, game} -> {:reply, {false, game}, game}
       {true, game} -> BackupAgent.put(name, game)
-                      {:reply, game, game}
+                      {:reply, {true, game}, game}
     end
   end
 
