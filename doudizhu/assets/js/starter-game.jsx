@@ -21,7 +21,7 @@ class Game extends React.Component {
 			middle: {},
 			selected: [],
 			base: 3,
-			// TODO: state for timer
+			time: 0,
 		};
 		
 		this.channel.join()
@@ -50,7 +50,21 @@ class Game extends React.Component {
 	}
 
 	get_view(view) {
-		this.setState(view);
+		if (view.time) {
+			this.setState(view.game);
+			this.setState({time: view.time});
+			this.timeId =this.setInterval(() => this.tick(), 1000);
+		} else {
+			this.setState(view.game);
+		}
+	}
+
+	tick() {
+		let time = this.state.time - 1;
+		if (time < 1) {
+			clearInterval(this.timeId);
+		}
+		this.setState(_.extend(this.state), {time: time}
 	}
 
 	ready() {
@@ -83,14 +97,14 @@ class Game extends React.Component {
 			<div className="row-firstline">
 				{/*<Scoreboard root={this} />*/}
 				<LandlordCard renderCards={this.renderCards.bind(this)} data={this.state.llCards} />
-				<Timer root={this}/>
+				<Timer time={this.state.time}/>
 			</div>
 			<div className="row">
 				<div className="column" float="left">
-					<OpponentDealCard root={this} data={this.state.left} />
+					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.left} />
 				</div>
 				<div className="column" float="right">
-					<OpponentDealCard root={this} data={this.state.right} />
+					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.right} />
 				</div>
 			</div>
 			<div className="column">
@@ -114,7 +128,7 @@ class Game extends React.Component {
 }
 
 function OpponentDealCard(props) {
-	let cards = props.root.renderCards(props.data.last)
+	let cards = props.renderCards(props.data.last)
 	return (
 		<div>
 			<p>{props.data.player}</p>
@@ -135,26 +149,6 @@ function MyDealCard(props) {
 		);
 }
 
-// class AHandOfCard extends React.Component {
-// 	renderCard(faceValue, select) {
-// 		return <Card value={faceValue} select={select}/>
-// 	}
-// 	render() {
-// 		let r = [];
-// 		for (let i = 0; i < 10; i++) {
-// 			r.push(this.renderCard("back", false))
-// 		}
-// 		r.push(<Card value={32} select={true} />)
-// 		for (let i = 11; i < 20; i++) {
-// 			r.push(this.renderCard("back", false))
-// 		}
-// 		return (
-// 			<div className="row">
-// 				{r}
-// 			</div>
-// 		);
-// 	}
-// }
 
 function AHandOfCard(props) {
 	let h = [];
@@ -186,31 +180,6 @@ function Card(props) {
 	}
 }
 
-// class Scoreboard extends React.Component{
-// 	renderOnePlayer(i, score) {
-// 		let name = "Player" + (i + 1)
-// 		return (
-// 			<div className="rowScore">
-// 				<div className="name"> {name} </div>
-// 				<div className="score"> {score} </div>
-// 			</div>
-// 		)
-// 	}
-
-// 	render() {
-// 		let scoreData = this.props.root.state.score
-// 		let l = [];
-// 		for (let i = 0; i < scoreData.length; i++) {
-// 			l.push(this.renderOnePlayer(i, scoreData[i]))
-// 		}
-// 		return (
-// 			<div id="container">
-// 				{l}
-// 			</div>
-// 		);
-// 	}
-// }
-
 function LandlordCard(props) {
 	let cards = props.renderCards(props.data)
 	return (<div className="dizhuCard">
@@ -219,6 +188,6 @@ function LandlordCard(props) {
 }
 
 function Timer(props) {
-	return (<div className="time"> 00:00:00 </div>)
+	return (<div className="time"> {props.time} </div>)
 }
 
