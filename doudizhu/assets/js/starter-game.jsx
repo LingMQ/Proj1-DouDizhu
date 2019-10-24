@@ -154,9 +154,9 @@ function MyDealCard(props) {
 
 function AHandOfCard(props) {
 	let h = [];
-	console.log(h.includes(1));
+	let s = _.concat(props.selected, [])
 	for(let i = 0; i < props.hands.length; i++) {
-		let f = (props.selected).includes(props.hands[i]);
+		let f = s.includes(props.hands[i]);
 		h.push(<Card key={props.hands[i]} 
 			value={props.hands[i]} 
 			select={f} 
