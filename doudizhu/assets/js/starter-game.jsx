@@ -82,14 +82,14 @@ class Game extends React.Component {
 			</div>
 			<div className="row">
 				<div className="column" float="left">
-					<OpponentDealCard data={this.state.left} />
+					<OpponentDealCard root={this} data={this.state.left} />
 				</div>
 				<div className="column" float="right">
-					<OpponentDealCard data={this.state.right} />
+					<OpponentDealCard root={this} data={this.state.right} />
 				</div>
 			</div>
 			<div className="column">
-				<MyDealCard data={this.state.middle} />
+				<MyDealCard root={this} data={this.state.middle} />
 			</div>
 
 			<button className="readyButton" 
@@ -156,6 +156,11 @@ function AHandOfCard(props) {
 			select={props.selected.includes(props.hands[i])} 
 			on_select={() => props.onSelect(i)} />)
 	}
+	return (
+			<div className="row">
+				{h}
+			</div>
+		);
 }
 
 function Card(props) {
