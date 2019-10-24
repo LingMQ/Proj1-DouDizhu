@@ -59,7 +59,7 @@ defmodule DoudizhuWeb.RoomChannel do
 	def handle_in("play", %{"cards" => cards}, socket) do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
-		name |> GameServer.peek |> IO |>inspect
+		name |> GameServer.peek |> IO.inspect
 		if GameServer.play_cards(name, user, cards) == :error do
 			{:reply, {:error, %{reason: "Cannot play in this way!"}}, socket}
 		else
