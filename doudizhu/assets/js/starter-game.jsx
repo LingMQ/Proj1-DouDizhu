@@ -41,13 +41,16 @@ class Game extends React.Component {
 
 	renderCards(cards) {
 		let c = [];
-		for (let i = 0; i < cards.length; i++) {
-	      c.push(<Card key={cards[i]} value={cards[i]} select={false} />);
-	    }
+		if (cards) {
+			for (let i = 0; i < cards.length; i++) {
+		      c.push(<Card key={cards[i]} value={cards[i]} select={false} />);
+		    }
+		}
 	    return c;
 	}
 
 	get_view(view) {
+		console.log(view);
 		this.setState(view);
 	}
 
