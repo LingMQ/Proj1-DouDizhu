@@ -22,9 +22,9 @@ defmodule DoudizhuWeb.RoomChannel do
 			game -> socket = socket 
 							|> assign(:name, name) 
 							|> assign(:user, user)
+							|> IO.inspect
 
 					send(self, {:after_join, game})
-
 
 					{:ok, socket}
 		end
