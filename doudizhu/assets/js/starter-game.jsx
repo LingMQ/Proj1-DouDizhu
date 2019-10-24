@@ -53,7 +53,7 @@ class Game extends React.Component {
 		if (view.time) {
 			this.setState(view.game);
 			this.setState({time: view.time});
-			this.timeId =this.setInterval(() => this.tick(), 1000);
+			this.timeId = setInterval(() => this.tick(), 1000);
 		} else {
 			this.setState(view.game);
 		}
