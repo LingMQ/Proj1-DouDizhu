@@ -59,20 +59,17 @@ defmodule DoudizhuWeb.RoomChannel do
 	def handle_in("play", %{"cards" => cards}, socket) do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
-		IO.inspect("before play")
-		name |> GameServer.peek |> IO.inspect
 		if GameServer.play_cards(name, user, cards) == :error do
 			{:reply, {:error, %{reason: "Cannot play in this way!"}}, socket}
 		else
-			IO.inspect("before check terminate")
-			name |> GameServer.peek |> IO.inspect
 			case GameServer.terminate(name) do
 		 		{false, game} -> broadcast!(socket, "update", game)
-								 # Process.send_after(
-								 # 	self(), 
-									# {:next, name, Game.current_round(game)}, 
-									# 15000)
+								 Process.send_after(
+								 	self(), 
+									{:next, name, Game.current_round(game)}, 
+									30000)
 		 		{true, game} ->  broadcast!(socket, "terminate", game)
+		 			IO.inspect(game)
 			end
 		end
 		{:noreply, socket}

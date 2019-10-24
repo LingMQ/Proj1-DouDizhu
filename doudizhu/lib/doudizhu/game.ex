@@ -169,9 +169,9 @@ defmodule Doudizhu.Game do
     hands = state[:hands] 
             |> Enum.at(game[:players][player][:index])
     case state[:last_valid] do
-      {} -> play_cards(game, [hd(hands)])
-      {^player, _} -> play_cards(game, [hd(hands)])
-      _ -> play_cards(game, [])
+      {} -> play_cards(game, [hd(hands)]) |> elem(1)
+      {^player, _} -> play_cards(game, [hd(hands)]) |> elem(1)
+      _ -> play_cards(game, []) |> elem(1)
     end
   end
 
