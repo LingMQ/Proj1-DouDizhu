@@ -26,7 +26,9 @@ defmodule DoudizhuWeb.RoomChannel do
 						|> assign(:name, name) 
 						|> assign(:user, user)
 						{:ok, 
-						%{"game" => Game.client_view(game, Chat.get_player(game, user))}, 
+						%{"game" => 
+						Game.client_view(game, 
+							Chat.get_player(game, user) |> elem(1))}, 
 						socket}
 				end
 			{:ok, game} -> socket = socket 
