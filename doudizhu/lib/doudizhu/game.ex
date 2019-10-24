@@ -22,8 +22,8 @@ defmodule Doudizhu.Game do
   end
 
   def client_view(game, player) do
-    l = next_player(game[:players], player)
-    r = last_player(game[:players], player)
+    l = last_player(game[:players], player)
+    r = next_player(game[:players], player)
     left = cv_helper(game, l)
     right = cv_helper(game, r)
     middle = cv_helper(game, player)
@@ -245,7 +245,9 @@ defmodule Doudizhu.Game do
   end
 
   defp last_player(players, player) do
-    index = rem(players[player][:index] - 1, 3)
+    index = players[player][:index] - 1;
+            |> (fn i -> if i < 0,  do: i + 3, else: i end).()
+            |> rem(3)
     players 
     |> Enum.find({nil, -1}, fn {_, v} -> v[:index] == index end)
     |> elem(0)
