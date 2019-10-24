@@ -115,7 +115,7 @@ defmodule DoudizhuWeb.RoomChannel do
 
 	defp broadcast_limited(msg, self_msg, game, time, socket) do
 		broadcast!(socket, msg, %{"game" => game, "time" => time})
-		Process.send_after(self(), send_after, time * 1000)
+		Process.send_after(self(), self_msg, time * 1000)
 	end
 
 
