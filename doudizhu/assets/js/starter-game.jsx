@@ -35,8 +35,8 @@ class Game extends React.Component {
 		this.channel.on("user_ready", this.get_view.bind(this));
 		this.channel.on("user_bid", this.get_view.bind(this));
 		this.channel.on("start_bid", this.get_view.bind(this));
-		// this.channel.on("update", this.get_view.bind(this));
-		// this.channel.on("terminate", this.get_view.bind(this));
+		this.channel.on("update", this.get_view.bind(this));
+		this.channel.on("terminate", this.get_view.bind(this));
 	}
 
 	renderCards(cards) {
@@ -60,6 +60,10 @@ class Game extends React.Component {
 
 	bid() {
 		this.channel.push("bid", {});
+	}
+
+	play() {
+		this.channel.push("play", {cards: this.state.selected});
 	}
 
 	onSelect(card) {
@@ -99,6 +103,8 @@ class Game extends React.Component {
 				onClick={this.ready.bind(this)}>Ready!</button>
 			<button className="readyButton" 
 				onClick={this.bid.bind(this)}>Bid for Landlord!</button>
+			<button className="readyButton" 
+				onClick={this.play.bind(this)}>Hands Out!</button>
 			<div className="column">
 				<AHandOfCard hands={this.state.hands} 
 					selected={this.state.selected}
