@@ -40,11 +40,11 @@ class Game extends React.Component {
 	}
 
 	renderCards(cards) {
-		let cards = [];
+		let c = [];
 		for (let i = 0; i < cards.length; i++) {
-	      cards.push(<Card key={cards[i]} value={cards[i]} select={false} />);
+	      c.push(<Card key={cards[i]} value={cards[i]} select={false} />);
 	    }
-	    return cards;
+	    return c;
 	}
 
 	get_view(view) {
