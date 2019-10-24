@@ -13,14 +13,28 @@ class Game extends React.Component {
 		this.channel = props.channel;
 		this.channel.join()
 				.receive("ok", () => {console.log("ok!")})
+				// TODO: display the reason
 				.receive("error", resp => {console.log("Can't join!", resp)});
 
 		this.state = {
-			players: 0,
-			hands: [], // this is a 2d array for 3players' hand of card
-			last: [],
-			score: [430, 580, 310],
+			// phase: null,
+			landlord: null,
+			llCards: [],
+			hands: [], // this the cards this client has
+			left: {},
+			right: {},
+			middle: {},
+			selected: [],
+			base: 3,
+			// TODO: state for timer
 		};
+
+		this.channel.on("user_joined", this.get_view.bind(this));
+		this.channel.on("user_ready", this.get_view.bind(this));
+		this.channel.on("user_bid", this.get_view.bind(this));
+		this.channel.on("start_bid", this.get_view.bind(this));
+		this.channel.on("update", this.get_view.bind(this));
+		this.channel.on("terminate", this.get_view.bind(this));
 	}
 
 	render() {
@@ -60,14 +74,14 @@ class Game extends React.Component {
 
 
 	get_view(view) {
-		this.setState(view.game);
+		this.setState(view);
 	}
 
-	addGamePlayer() {
-		//TODO work on the channel side for this ???
-		this.channel.push("addPlayer", {})
-			.receive("ok", this.get_view.bind(this))
-	}
+	// addGamePlayer() {
+	// 	//TODO work on the channel side for this ???
+	// 	this.channel.push("addPlayer", {})
+	// 		.receive("ok", this.get_view.bind(this))
+	// }
 }
 
 function OpponentDealCard(props) {

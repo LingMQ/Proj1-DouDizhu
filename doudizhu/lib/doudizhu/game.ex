@@ -22,7 +22,19 @@ defmodule Doudizhu.Game do
   end
 
   def client_view(game, player) do
-    
+    l = next_player(game[:players], player)
+    r = last_player(game[:players], player)
+    left = cv_helper(game, l)
+    right = cv_helper(game, r)
+    middle = cv_helper(game, player)
+    state_map = cv_state_trans(game, player)
+    %{
+      left: left,
+      right: right,
+      middle: middle,
+      selected: [], 
+    }
+    |> Map.merge(state_map)
   end
   
   @doc """
@@ -185,6 +197,37 @@ defmodule Doudizhu.Game do
     end
   end
 
+  defp cv_helper(game, player) do
+    if player == nil do
+      %{player: nil, last: [], total: 0}
+    else
+      p = game[:players][player]
+      last = case Map.get(game, :state) do
+        nil -> []
+        s -> s[:last][p[:index]]
+      end
+      %{player: player, last: last, total: p[:total]}
+    end
+  end
+
+  def cv_state_trans(game, player) do
+    case Map.get(game, :state) do
+      nil -> %{
+        landlord: nil, 
+        llCards: [],
+        hands: [],
+        base: 0
+      }
+      s -> index = game[:players][player][:index]
+        %{
+        landlord: s[:landlord]
+        llCards: s[:hands] |> Enum.at(3),
+        hands: s[:hands][index],
+        base: s[:base]
+      }
+    end
+  end
+
   # calculate the total score, return a new information map
   # %{index: , ready: , total:}
   defp update_score(winner, info, base, landlord) do
@@ -199,11 +242,18 @@ defmodule Doudizhu.Game do
     end
   end
 
+  defp last_player(players, player) do
+    index = rem(players[player][:index] - 1, 3)
+    players 
+    |> Enum.find({nil, -1}, fn {_, v} -> v[:index] == index end)
+    |> elem(0)
+  end
+
   # find the next player, given the index map and current player
   defp next_player(players, player) do
     index = rem(players[player][:index] + 1, 3)
     players 
-    |> Enum.find(fn {_, v} -> v[:index] == index end)
+    |> Enum.find({nil, -1}, fn {_, v} -> v[:index] == index end)
     |> elem(0)
   end
   
