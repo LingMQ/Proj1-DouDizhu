@@ -1,0 +1,16 @@
+[Unit]
+Description=Fight Against Landlord Game
+
+[Service]
+Type=simple
+User=doudizhu
+Group=doudizhu
+Restart=on-failure
+Environment=MIX_ENV=prod "PORT=4791"
+Environment=LANG=en_US.UTF-8
+
+WorkingDirectory=/home/doudizhu/doudizhu
+ExecStart=bash /home/doudizhu/doudizhu/start.sh
+
+[Install]
+WantedBy=multi-user.target
