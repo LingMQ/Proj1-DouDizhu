@@ -50,7 +50,6 @@ class Game extends React.Component {
 	}
 
 	get_view(view) {
-		console.log(view);
 		this.setState(view);
 	}
 
