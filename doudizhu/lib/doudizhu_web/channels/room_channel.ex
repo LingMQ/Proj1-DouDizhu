@@ -63,7 +63,7 @@ defmodule DoudizhuWeb.RoomChannel do
 		if GameServer.play_cards(name, user, cards) == :error do
 			{:reply, {:error, %{reason: "Cannot play in this way!"}}, socket}
 		else
-			name |> GameServer.peek |> IO |>inspect
+			name |> GameServer.peek |> IO.inspect
 			case GameServer.terminate(name) do
 		 		{false, game} -> broadcast!(socket, "update", game)
 								 Process.send_after(
