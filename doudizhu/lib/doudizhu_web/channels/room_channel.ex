@@ -2,7 +2,6 @@ defmodule DoudizhuWeb.RoomChannel do
 	use DoudizhuWeb, :channel
 
 	alias Doudizhu.Game
-	alias Doudizhu.BackupAgent
 	alias Doudizhu.GameServer
 
 	intercept [

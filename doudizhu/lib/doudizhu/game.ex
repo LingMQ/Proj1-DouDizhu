@@ -42,12 +42,13 @@ defmodule Doudizhu.Game do
   """
   def add_player(game, player) do
     players = game[:players]
-    if (map_size(players) < 3) do
-      p = %{index: map_size(players), ready: false, total: 0}
-      game = %{game | players: Map.put(players, player, p)}
-      {:ok, game}
-    else
-      {:error, game}
+    cond do
+      Map.has_key?(players, player) -> {:ok, game}
+      map_size(players) < 3 -> 
+        p = %{index: map_size(players), ready: false, total: 0}
+        game = %{game | players: Map.put(players, player, p)}
+        {:ok, game}
+      true -> {:error, game}
     end
   end
 
@@ -59,7 +60,8 @@ defmodule Doudizhu.Game do
     p = game[:players][player]
     players = Map.put(game[:players], player, %{p | ready: true})
 
-    if Enum.reduce(players, true, fn {_, y}, acc -> y[:ready] && acc end) do
+    if map_size(players)  == 3 && Enum.reduce(players, true, 
+      fn {_, y}, acc -> y[:ready] && acc end) do
       {:go, Map.put(game, :players, players)}
     else
       {:ready, Map.put(game, :players, players)}
