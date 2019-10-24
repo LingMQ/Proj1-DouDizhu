@@ -24,6 +24,8 @@ class Game extends React.Component {
 	}
 
 	render() {
+		let haha = window.images_path + "11.png"
+		console.log(haha)
 		return (
 		<div>
 			<h2 align="center">Hello, {window.playerName}! Welcome to Fight Against Landlord game room "{window.gameName}"... </h2>
@@ -37,6 +39,7 @@ class Game extends React.Component {
 				</div>
 				<Timer root={this}/>
 			</div>
+			<img src={haha}/>
 
 			<div className="row">
 				<div className="column" float="left">

@@ -1,6 +1,7 @@
 <script>
  window.gameName = "<%= @name %>";
  window.playerName = "<%= @player%>";
+ window.images_path = "<%= Routes.static_path(@conn, "/image/")%>"
 </script>
 <body background=>
 <div id="root">
