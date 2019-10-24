@@ -114,8 +114,6 @@ defmodule DoudizhuWeb.RoomChannel do
 	end
 
 	defp broadcast_limited(msg, self_msg, game, time, socket) do
-		IO.inspect(self_msg)
-		IO.inspect(time)
 		broadcast!(socket, msg, %{"game" => game, "time" => time})
 		Process.send_after(self(), self_msg, time * 1000)
 	end
