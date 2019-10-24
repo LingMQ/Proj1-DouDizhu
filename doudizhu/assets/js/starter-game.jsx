@@ -64,7 +64,7 @@ class Game extends React.Component {
 		if (time < 1) {
 			clearInterval(this.timeId);
 		}
-		this.setState(_.extend(this.state), {time: time}
+		this.setState(_.extend(this.state, {time: time}));
 	}
 
 	ready() {
