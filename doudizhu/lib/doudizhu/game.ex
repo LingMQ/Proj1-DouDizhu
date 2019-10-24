@@ -20,6 +20,10 @@ defmodule Doudizhu.Game do
       base: 3,
     }
   end
+
+  def client_view(game, player) do
+    
+  end
   
   @doc """
   Add an user to current table if there is a seat, report :error otherwise.
@@ -107,6 +111,13 @@ defmodule Doudizhu.Game do
     end
   end
 
+  def current_round(game) do
+    case game[:state] do
+      nil -> nil
+      s -> s[:current_round] 
+    end
+  end
+
   # if the user does not give any card, assume player is 
   # the current player
   def play_cards(game, []) do
@@ -135,6 +146,18 @@ defmodule Doudizhu.Game do
       end
     else
       {:error, game}
+    end
+  end
+
+  def naive_play(game) do
+    state = game[:state]
+    player = state[:current_player]
+    hands = state[:hands] 
+            |> Enum.at(game[:players][player][:index])
+    case state[:last_valid] do
+      {} -> play_cards(game, [hd(hands)])
+      {^player, _} -> play_cards(game, [hd(hands)])
+      _ -> play_cards(game, [])
     end
   end
 

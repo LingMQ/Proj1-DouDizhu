@@ -43,6 +43,7 @@ defmodule Doudizhu.GameServer do
   @doc """
   Set a player to be ready for a new game, if all three players are prepared,
   The game will be started automatically.
+  Return the latest game state
   """
   def ready(name, player) do
     GenServer.call(reg(name), {:ready, name, player})
@@ -50,6 +51,7 @@ defmodule Doudizhu.GameServer do
 
   @doc """
   Put a player into the pool bidding for the landlord.
+  Return the latest game state
   """
   def bid(name, player) do
     GenServer.call(reg(name), {:bid, name, player})
@@ -68,6 +70,10 @@ defmodule Doudizhu.GameServer do
   """
   def play_cards(name, player, cards) do
     GenServer.call(reg(name), {:play, name, player, cards})
+  end
+
+  def naive_play(name) do
+    GenServer.call(reg(name), {:naive, name})
   end
 
   @doc """
@@ -98,10 +104,10 @@ defmodule Doudizhu.GameServer do
   def handle_call({:ready, name, player}, _from, game) do
     case Game.ready(game, player) do
       {:ready, game} -> BackupAgent.put(name, game)
-                     {:reply, game, game}
+                     {:reply, {:ready, game}, game}
       {:go, game} -> game = Game.init_game(game)
                      BackupAgent.put(name, game)
-                     {:reply, game, game}
+                     {:reply, {:go, game}, game}
     end
   end
 
@@ -127,7 +133,12 @@ defmodule Doudizhu.GameServer do
     else
       {:reply, :error, game}
     end
-    
+  end
+
+  def handle_call({:naive, name}, _from, game) do
+    game = Game.naive_play(game)
+    BackupAgent.put(name, game)
+    {:reply, game, game}
   end
 
   def handle_call({:terminate, name}, _from, game) do
