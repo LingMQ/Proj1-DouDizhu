@@ -95,7 +95,7 @@ class Game extends React.Component {
 	render() {
 		return (
 		<div>
-			<h2 align="center">Hello, {window.playerName}! Welcome to Fight Against Landlord game room "{window.gameName}"... </h2>
+			<h2 className="gameTitle"> Game Room</h2> <h1 className="gameTitle"> {window.gameName} </h1>
 
 			<div className="row-firstline">
 				{/*<Scoreboard root={this} />*/}
@@ -114,12 +114,14 @@ class Game extends React.Component {
 				<MyDealCard root={this} data={this.state.middle} />
 			</div>
 
-			<button className="readyButton" 
-				onClick={this.ready.bind(this)}>Ready!</button>
-			<button className="readyButton" 
-				onClick={this.bid.bind(this)}>Bid for Landlord!</button>
-			<button className="readyButton" 
-				onClick={this.play.bind(this)}>Hands Out!</button>
+			<div className="row-button">
+				<button className="readyButton"
+					onClick={this.ready.bind(this)}>Ready!</button>
+				<button className="readyButton"
+					onClick={this.bid.bind(this)}>Bid for Landlord!</button>
+			</div>
+				<button className="handoutButton"
+					onClick={this.play.bind(this)}>Hands Out!</button>
 			<div className="column">
 				<AHandOfCard hands={this.state.hands} 
 					selected={this.state.selected}
@@ -134,8 +136,8 @@ function OpponentDealCard(props) {
 	let cards = props.renderCards(props.data.last)
 	return (
 		<div>
-			<p>{props.data.player}</p>
-			<p>{props.data.total}</p>
+			<p className="player">{props.data.player}</p>
+			<p className="player"> {props.data.total}</p>
 			<p>{cards}</p>
 		</div>
 	);
@@ -145,8 +147,8 @@ function MyDealCard(props) {
 	let cards = props.root.renderCards(props.data.last)
 	return (
 		<div>
-			<p>{props.data.player}</p>
-			<p>{props.data.total}</p>
+			<p className="player"> {props.data.player}</p>
+			<p className="player"> score: {props.data.total}</p>
 			<p>{cards}</p>
 		</div>
 		);
@@ -164,7 +166,7 @@ function AHandOfCard(props) {
 			onSelect={() => props.onSelect(props.hands[i])} />)
 	}
 	return (
-			<div className="row">
+			<div className="row" align="center">
 				{h}
 			</div>
 		);

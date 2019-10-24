@@ -1,6 +1,7 @@
 /* This file is for your main application css. */
 
 @import "~milligram/dist/milligram";
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
 
 .column > p {
     padding-top: 10ex;
@@ -47,15 +48,20 @@
 }
 
 .readyButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: -0px;
-    margin-left: 450px;
+    display: inline;
+    margin-top: 5px;
+    margin-left: 300px;
+    float: left;
+    background-color: #72DA86;
+    border-color: #72DA86;
 }
 
 .time {
     float: right;
+    font-size: 450%;
+    font-family: Kefa;
+    padding-bottom: 3mm;
+    color: #696866;
 }
 
 .leftPlayer {
@@ -66,6 +72,29 @@
     float: right;
 }
 
-.row-secline {
+.gameTitle {
+    text-align: center;
+    font-family: Kefa;
+    color: cornflowerblue;
+    display: inline;
+    padding-right: 5px;
+}
 
+.player {
+    font-family: "Lao MN";
+    font-size: larger;
+    color: darkolivegreen;
+    margin: 0ex;
+}
+
+.row-button {
+    positions: relative;
+    display: flex;
+}
+
+.handoutButton {
+    position: relative;
+    left: 45%;
+    background-color: orchid;
+    border-color: orchid;
 }
