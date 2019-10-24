@@ -220,7 +220,7 @@ defmodule Doudizhu.Game do
       }
       s -> index = game[:players][player][:index]
         %{
-        landlord: s[:landlord]
+        landlord: s[:landlord],
         llCards: s[:hands] |> Enum.at(3),
         hands: s[:hands][index],
         base: s[:base]
