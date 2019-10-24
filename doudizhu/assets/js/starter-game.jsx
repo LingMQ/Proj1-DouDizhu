@@ -29,12 +29,12 @@ class Game extends React.Component {
 			// TODO: state for timer
 		};
 
-		this.channel.on("user_joined", this.get_view.bind(this));
-		this.channel.on("user_ready", this.get_view.bind(this));
-		this.channel.on("user_bid", this.get_view.bind(this));
-		this.channel.on("start_bid", this.get_view.bind(this));
-		this.channel.on("update", this.get_view.bind(this));
-		this.channel.on("terminate", this.get_view.bind(this));
+		// this.channel.on("user_joined", this.get_view.bind(this));
+		// this.channel.on("user_ready", this.get_view.bind(this));
+		// this.channel.on("user_bid", this.get_view.bind(this));
+		// this.channel.on("start_bid", this.get_view.bind(this));
+		// this.channel.on("update", this.get_view.bind(this));
+		// this.channel.on("terminate", this.get_view.bind(this));
 	}
 
 	render() {
