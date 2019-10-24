@@ -186,7 +186,8 @@ defmodule Doudizhu.Game do
     case wi do
       nil -> {false, game}
       w -> base = game[:state][:base]
-           landlord = Map.get(game[:players], game[:state][:landlord])
+           landlord = Map.get(game[:players], game[:state][:landlord]) 
+                      |> Map.get(:index)
            p = game[:players]
            |> Enum.map(fn {k, v} -> # {player, %{index:, ready:, total:} 
                 {k, update_score(w, v, base, landlord)} 
@@ -234,6 +235,7 @@ defmodule Doudizhu.Game do
   # %{index: , ready: , total:}
   defp update_score(winner, info, base, landlord) do
     base = if winner != landlord, do: -base, else: base
+    |> IO.inspect
     case info[:index] do
       ^landlord -> %{index: landlord, 
                     ready: false, 
