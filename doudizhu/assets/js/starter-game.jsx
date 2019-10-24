@@ -97,10 +97,14 @@ class Game extends React.Component {
 		<div>
 			<h2 className="gameTitle"> Game Room</h2> <h1 className="gameTitle"> {window.gameName} </h1>
 
-			<div className="row-firstline">
+			<div className="row">
 				{/*<Scoreboard root={this} />*/}
+				<div className="column" align="center">
 				<LandlordCard renderCards={this.renderCards.bind(this)} data={this.state.llCards} />
+				</div>
+				<div className="column">
 				<Timer time={this.state.time}/>
+				</div>
 			</div>
 			<div className="row">
 				<div className="column" float="left">

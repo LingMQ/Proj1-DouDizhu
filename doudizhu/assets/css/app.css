@@ -21,11 +21,6 @@
     padding-bottom: 3ex;
 }
 
-.row-firstline {
-    text-align: center;
-    padding-top: 3ex;
-}
-
 .rowScore {
     position: relative;
     display: flex;

@@ -277,9 +277,19 @@ defmodule Doudizhu.Game do
     state = game[:state]
     player = state[:current_player]
     case state[:last_valid] do
-      {} -> {true, Rule.get_cat(cards)}
-      {^player, _} -> {true, Rule.get_cat(cards)}
-      {_, f} -> cards 
+      {} -> f = Rule.get_cat(cards)
+        if f == :illegal do
+          {false, {}}
+        else
+          {true, f}
+        end
+      {^player, f2} -> f = Rule.get_cat(cards)
+        if f == :illegal do
+          {false, f2}
+        else
+          {true, f}
+        end
+      {_, f} -> cards
                 |> Rule.get_cat 
                 |> Rule.conquer(f)
     end
