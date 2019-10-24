@@ -8,14 +8,27 @@
 }
 
 #container {
-    width: 600px;
+    width: 400px;
     height: auto;
+    float: left;
+    padding-bottom: 3ex;
+}
+
+.column {
+    padding-top: 3ex;
+    text-align: center;
+    padding-bottom: 3ex;
+}
+
+.row-firstline {
+    text-align: center;
+    padding-top: 3ex;
 }
 
 .rowScore {
     position: relative;
-    display: block;
-    width: 100%;
+    display: flex;
+    width: 30%;
     height: 40px;
     border-bottom: 1px solid #AFAFAF;
 }
@@ -30,4 +43,29 @@
     position: relative;
     display: inline-block;
     width: 25%;
+    line-height: 45px;
+}
+
+.readyButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: -0px;
+    margin-left: 450px;
+}
+
+.time {
+    float: right;
+}
+
+.leftPlayer {
+    float: left;
+}
+
+.rightPlayer {
+    float: right;
+}
+
+.row-secline {
+
 }

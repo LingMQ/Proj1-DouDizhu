@@ -1,10 +1,13 @@
-
+<body background="https://i.ibb.co/s3qHLWX/di.png">
 <div class="row">
   <div class="column">
-    <h1>Fight Against Landlord </h1>
+    <h1 align= "left">Fight Against Landlord </h1>
+    <div class="row" align="left">
       <%= form_for @conn, "/game", fn f -> %>
+        			<p>Enter your user name: <%= text_input f, :player, placeholder: "awesome_me" %></p>
         			<p>Enter a room name: <%= text_input f, :name, placeholder: "demo" %></p>
-        			<p><%= submit "Join Room"%></p>
+        			<p><%= submit "Join Game!"%></p>
         		<% end %>
+    </div>
   </div>
 </div>
