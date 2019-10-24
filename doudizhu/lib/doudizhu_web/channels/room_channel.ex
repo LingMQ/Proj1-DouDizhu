@@ -11,7 +11,8 @@ defmodule DoudizhuWeb.RoomChannel do
 		"user_bid", 
 		"start_bid", 
 		"update",
-		"terminate"
+		"terminate",
+		"new_text"
 	]
 
 	def join("room:" <> name, payload, socket) do
@@ -56,6 +57,16 @@ defmodule DoudizhuWeb.RoomChannel do
 			view 
 			|> Map.put("game", Game.client_view(game, u))
 			|> Map.put("type", t))
+		{:noreply, socket}
+	end
+
+	def handle_out("new_text", game, socket) do
+		his = game[:history]
+		user = socket.assigns[:user]
+		{t, _} = view_user(game, user)
+		if t == "o" do
+			push(socket, "new_msg", %{"text" => his})
+		end
 		{:noreply, socket}
 	end
 
@@ -113,6 +124,16 @@ defmodule DoudizhuWeb.RoomChannel do
 			end
 		end
 		{:noreply, socket}
+	end
+
+	def handle_in("chat", %{"text" => text}, socket) do
+		name = socket.assigns[:name]
+		user = socket.assigns[:user]
+		case GameServer.add_text(name, user, text) do
+			{:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+			{:ok, game} -> broadcast!(socket, "new_text", game)
+				{:noreply, socket}
+		end
 	end
 
 	def handle_info({:after_join, game}, socket) do
