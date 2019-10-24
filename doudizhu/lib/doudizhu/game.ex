@@ -98,7 +98,7 @@ defmodule Doudizhu.Game do
     # pick a landlord
     state = game[:state]
     bid = cond do
-      state[:bid] == 0 -> game |> Map.get(:players) |> Map.keys
+      length(state[:bid]) == 0 -> game |> Map.get(:players) |> Map.keys
       game[:winner] == nil -> state[:bid]
       !(game[:winner] in state[:bid]) -> state[:bid]
       true -> state[:bid] ++ [game[:winner]]

@@ -157,7 +157,7 @@ function AHandOfCard(props) {
 	for(let i = 0; i < props.hands.length; i++) {
 		h.push(<Card key={props.hands[i]} value={props.hands[i]} 
 			select={props.selected.includes(props.hands[i])} 
-			on_select={() => props.onSelect(i)} />)
+			onSelect={() => props.onSelect(i)} />)
 	}
 	return (
 			<div className="row">
@@ -169,13 +169,13 @@ function AHandOfCard(props) {
 function Card(props) {
 	let cardUrl = (require("./card").dict)[props.value];
 	if (props.select) {
-		return (<div onClick={props.onSelect}>
+		return (<span onClick={props.onSelect}>
 			<img src={cardUrl} width="85" height="160"/>
-			</div>);
+			</span>);
 	} else {
-		return (<div onClick={props.onSelect}>
+		return (<span onClick={props.onSelect}>
 			<img src={cardUrl} width="58" height="108"/>
-			</div>);
+			</span>);
 	}
 }
 
