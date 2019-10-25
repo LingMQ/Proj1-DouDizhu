@@ -204,6 +204,17 @@ defmodule Doudizhu.Game do
     end
   end
 
+  @doc """
+  Given the seat number(0, 1, 2) of a player, return its name.
+  """
+  def get_player(game, index) do
+    case Enum.find(game[:players], 
+      fn {_, v} -> v[:index] == index end) do
+      nil -> nil
+      {k, _} -> k
+    end
+  end
+
   defp cv_helper(game, player) do
     if player == nil do
       %{player: nil, last: [], total: 0}
@@ -217,7 +228,7 @@ defmodule Doudizhu.Game do
     end
   end
 
-  def cv_state_trans(game, player) do
+  defp cv_state_trans(game, player) do
     case Map.get(game, :state) do
       nil -> %{
         landlord: nil, 

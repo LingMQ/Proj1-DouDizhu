@@ -137,6 +137,16 @@ defmodule DoudizhuWeb.RoomChannel do
 		end
 	end
 
+	def handle_in("switch", %{"player" => player}, socket) do
+		name = socket.assigns[:name]
+		user = socket.assigns[:user]
+		case GameServer.set_player(name, user, player) do
+			{:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+			{:ok, game} -> {:ok, 
+				%{"game" => Game.client_view(game, player)}}, socket}
+		end
+	end
+
 	def handle_info({:after_join, game}, socket) do
 		broadcast!(socket, "user_joined", game)
 		{:noreply, socket}
@@ -174,7 +184,7 @@ defmodule DoudizhuWeb.RoomChannel do
 		if Map.has_key?(p, user) do
 			{"p", user}
 		else 
-			{"o", game[:observers][user]}
+			{"o", Chat.get_player(game, user)}
 		end
 	end
 
