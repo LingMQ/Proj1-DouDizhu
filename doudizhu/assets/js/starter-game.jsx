@@ -27,6 +27,7 @@ class Game extends React.Component {
 			ob: false,
 			readyButton: false,
 			bidLandlordButton: false,
+			beginGame: false,
 		};
 		
 		this.channel.join()
@@ -39,7 +40,7 @@ class Game extends React.Component {
 		this.channel.on("user_joined", this.get_view.bind(this));
 		this.channel.on("user_ready", this.get_view.bind(this));
 		this.channel.on("user_bid", this.get_view.bind(this));
-		this.channel.on("start_bid", this.get_view.bind(this));
+		this.channel.on("start_bid", this.get_state_bid_view.bind(this));
 		this.channel.on("update", this.get_view.bind(this));
 		this.channel.on("terminate", this.get_view.bind(this));
 
@@ -72,6 +73,10 @@ class Game extends React.Component {
 		} else {
 			this.setState(view.game);
 		}
+	}
+
+	get_state_bid_view(view) {
+		this.setState({beginGame: true});
 	}
 
 	tick() {
@@ -145,10 +150,12 @@ class Game extends React.Component {
 			</div>
 			<div className="row">
 				<div className="column" float="left">
-					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.left} />
+					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.left}
+									  beginGame={this.state.beginGame}/>
 				</div>
 				<div className="column" float="right">
-					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.right} />
+					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.right}
+									  beginGame={this.state.beginGame}/>
 				</div>
 				<Chat display={this.state.ob} data={this.state.text}
 					  onKeyPress={this.submit.bind(this)}/>
@@ -195,19 +202,23 @@ function Chat(props) {
 			</div>
 			);
 	} else {
-		return <div></div>
+		return <div/>
 	}
 }
 
 function OpponentDealCard(props) {
 	let cards = props.renderCards(props.data.last)
 	let text = ""
+	let cardLeftText = ""
 	if (props.data.ready) {
 		text = props.data.player + " is Ready!"
 	}
 
+	if (props.beginGame) {
+		cardLeftText = "Card Left: " +  props.data.leftC
+	}
+
 	let lastC = props.data.last
-	console.log(props.data)
 	if (lastC === undefined) {
 		return (
 			<div>
@@ -217,22 +228,32 @@ function OpponentDealCard(props) {
 			</div>
 		);
 	} else if (lastC.length === 0) {
-		let passCard = (require("./card").dict)["pass"]
-		return (
-			<div>
-				<p className="player"> Player: {props.data.player}</p>
-				<p className="player"> Score: {props.data.total}</p>
-				<p> Card Left: {props.data.leftC}</p>
-				<img src={passCard} width="58" height="108"/>
-				<p>{text}</p>
-			</div>
-		);
+		if (props.beginGame) {
+			let passCard = (require("./card").dict)["pass"]
+			return (
+				<div>
+					<p className="player"> Player: {props.data.player}</p>
+					<p className="player"> Score: {props.data.total}</p>
+					<p> {cardLeftText} </p>
+					<img src={passCard} width="58" height="108"/>
+				</div>
+			);
+		} else {
+			return (
+				<div>
+					<p className="player"> Player: {props.data.player}</p>
+					<p className="player"> Score: {props.data.total}</p>
+					<p> {cardLeftText} </p>
+					<p>{text}</p>
+				</div>
+			);
+		}
 	}
 	return (
 		<div>
 			<p className="player"> Player: {props.data.player}</p>
 			<p className="player"> Score: {props.data.total}</p>
-			<p> Card Left: {props.data.leftC}</p>
+			<p> {cardLeftText} </p>
 			<p>{text}</p>
 			<p>{cards}</p>
 		</div>
