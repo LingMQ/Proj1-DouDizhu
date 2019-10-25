@@ -93,3 +93,18 @@
     background-color: orchid;
     border-color: orchid;
 }
+
+.chatterPlace {
+    margin: 1ex;
+    color: mediumpurple;
+    font-family: Kefa;
+}
+
+ul {
+    list-style-type: none;
+    width: 200px;
+    height: 200px;
+    overflow: auto;
+    color: mediumpurple;
+    font-family: "Lucida Grande";
+}

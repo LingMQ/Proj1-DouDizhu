@@ -23,7 +23,9 @@ class Game extends React.Component {
 			base: 3,
 			time: 0,
 			text: [],
-			ob: false
+			ob: false,
+			readyButton: false,
+			bidLandlordButton: false
 		};
 		
 		this.channel.join()
@@ -93,10 +95,14 @@ class Game extends React.Component {
 	}
 
 	ready() {
+		this.setState({readyButton: true})
 		this.channel.push("ready", {});
 	}
 
 	bid() {
+		if (this.state.readyButton == true) {
+			this.setState({bidLandlordButton: true})
+		}
 		this.channel.push("bid", {});
 	}
 
@@ -135,15 +141,17 @@ class Game extends React.Component {
 				<div className="column" float="right">
 					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.right} />
 				</div>
+				<Chat display={this.state.ob} data={this.state.text}
+					  onKeyPress={this.submit.bind(this)}/>
 			</div>
 			<div className="column">
 				<MyDealCard root={this} data={this.state.middle} />
 			</div>
 
 			<div className="row-button">
-				<button className="readyButton"
+				<button className="readyButton" disabled={this.state.readyButton}
 					onClick={this.ready.bind(this)}>Ready!</button>
-				<button className="readyButton"
+				<button className="readyButton" disabled={this.state.bidLandlordButton}
 					onClick={this.bid.bind(this)}>Bid for Landlord!</button>
 			</div>
 				<button className="handoutButton"
@@ -153,8 +161,6 @@ class Game extends React.Component {
 					selected={this.state.selected}
 					onSelect={this.onSelect.bind(this)} />
 			</div>
-			<Chat display={this.state.ob} data={this.state.text}
-				onKeyPress={this.submit.bind(this)}/>
 		</div>
 		);
 	}
@@ -163,7 +169,7 @@ class Game extends React.Component {
 function Chat(props) {
 	if (props.display) {
 		let m = [];
-		for (let i = 0; i < props.data.length; i++) {
+		for (let i = props.data.length - 1; i >= 0; i--) {
 			let u = props.data[i][0];
 			let t = props.data[i][1];
 			let k = u + i;
@@ -172,10 +178,11 @@ function Chat(props) {
 				);
 		}
 		return (
-			<div className= "row">
+			<div className= "row-firstline">
+				<p className="chatterPlace"> Chatter Place </p>
+				<input type="text" id="chat-input"
+					   onKeyPress={props.onKeyPress} />
 				<ul>{m} </ul>
-				<input type="text" id="chat-input" 
-					onKeyPress={props.onKeyPress} />
 			</div>
 			);
 	} else {
