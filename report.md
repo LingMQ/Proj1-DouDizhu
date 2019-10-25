@@ -7,7 +7,7 @@
 
 #### Game Name: Dou Dizhu (Fighting Against Landlord)
 
- ## Introduction and Game Description
+## Introduction and Game Description
 
 There are many interesting card games in the world, such as Poker, Eleusis, and
 Tri-card. Among those games, we want to build one that both interesting and
@@ -34,13 +34,15 @@ first player to have no card left. Both the landlord and farmers take turns to
 play cards. There are some specific rules about the ranks of the cards and
 combining the cards. More information and rules can be found:
 
-[https://www.youtube.com/watch?v=HsW-W74uz_k](https://www.youtube.com/watch?v=HsW-W74uz_k)](https://www.youtube.com/watch?v=HsW-W74uz_k](https://www.youtube.com/watch?v=HsW-W74uz_k))
-[and
-[[https://en.wikipedia.org/wiki/Dou_dizhu](https://en.wikipedia.org/wiki/Dou_dizhu)](https://en.wikipedia.org/wiki/Dou_dizhu](https://en.wikipedia.org/wiki/Dou_dizhu)).
+[https://www.youtube.com/watch?v=HsW-W74uz_k](https://www.youtube.com/watch?v=HsW-W74uz_k)
+
+and
+
+[https://en.wikipedia.org/wiki/Dou_dizhu](https://en.wikipedia.org/wiki/Dou_dizhu)
 
   
 
- ## UI Design
+## UI Design
 
 We have two main pages in the game. The first page asks the player’s name and
 which game room he or she wants to join. A player can choose to either enter a
@@ -181,14 +183,15 @@ The program checks whether the game is finished or not after each round.
   
 
 | Category | Description | Example |
-|--------------|------------------------------|---------| | Solo | Any single
-Card | 3 | | Solo Chain | Five or more consecutive individual cards | 34567 | |
-Pair | Two matching card of equal rank | 33 | | Pair Sisters | Three or more
-consecutive pairs | 334455 | | Trio | Three-of-a-kind: Three individual cards of
-the same rank with a single or pair as kicker | 333+4 | | Airplane | Two or more
-consecutive trios | 333444+56 | | Bomb | Four-of-a-kind, defies category rules,
-yet subjected to the rank | 3333 | | Rocket! | Double Joker, ruin the universe.
-| CJ&BJ |
+|--------------|------------------------------|---------|
+| Solo | Any single Card | 3 |
+| Solo Chain | Five or more consecutive individual cards | 34567 |
+| Pair | Two matching card of equal rank | 33 |
+| Pair Sisters | Three or more consecutive pairs | 334455 |
+| Trio | Three-of-a-kind: Three individual cards of the same rank with a single or pair as kicker | 333+4 |
+| Airplane | Two or more consecutive trios | 333444+56 |
+| Bomb | Four-of-a-kind, defies category rules, yet subjected to the rank | 3333 |
+| Rocket! | Double Joker, ruin the universe. | CJ&BJ |
 
   
 
@@ -277,15 +280,11 @@ the latest game view.
 
 ## Reference and Attributes
 
--   “Dou Dizhu.” Wikipedia, Wikimedia Foundation, 19 Sept. 2019,
--   “en.wikipedia.org/wiki/Dou_dizhu.
+- "Dou Dizhu". Wikipedia, Wikimedia Foundation, 19 Sept. 2019, “en.wikipedia.org/wiki/Dou_dizhu.
     
--   “Dou Dizhu (斗地主).” Rules of Card Games: Dou Dizhu,
--   “www.pagat.com/climbing/doudizhu.html.
+- "Dou Dizhu". Rules of Card Games: Dou Dizhu, www.pagat.com/climbing/doudizhu.html.
     
--   [https://opengameart.org/content/playing-cards](https://opengameart.org/content/playing-cards)
--   [licensed under CC-BY3.0 and OGA-BY 3.0
+- https://opengameart.org/content/playing-cards licensed under CC-BY3.0 and OGA-BY 3.0
     
--   [https://www.pexels.com/photo/man-holding-playing-cards-2631067/](https://www.pexels.com/photo/man-holding-playing-cards-2631067/)
--   [licensed under Pexels
-   
+- https://www.pexels.com/photo/man-holding-playing-cards-2631067/ licensed under Pexels
+
