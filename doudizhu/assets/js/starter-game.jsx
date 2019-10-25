@@ -222,7 +222,6 @@ function OpponentDealCard(props) {
 		<div>
 			<button className="handoutButton"
 					onClick={() => props.switch(p)}>Watch {p}</button>
-			<p>{btn}</p>
 			<p className="player"> Score: {props.data.total}</p>
 			<p>{text}</p>
 			<p>{cards}</p>
@@ -231,7 +230,6 @@ function OpponentDealCard(props) {
 		return (
 		<div>
 			<p className="player"> Player: {p}</p>
-			<p>{btn}</p>
 			<p className="player"> Score: {props.data.total}</p>
 			<p>{text}</p>
 			<p>{cards}</p>
