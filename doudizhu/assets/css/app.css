@@ -94,6 +94,14 @@
     border-color: orchid;
 }
 
+.firstLineInfo {
+    color: #322E29;
+    font-family: Kefa;
+    font-size: large;
+    padding-top: 3ex;
+    padding-left: 5ex;
+}
+
 .chatterPlace {
     margin: 1ex;
     color: mediumpurple;

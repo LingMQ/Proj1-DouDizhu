@@ -14,6 +14,7 @@ class Game extends React.Component {
 		this.state = {
 			// phase: null,
 			landlord: null,
+			currentPlayer: null,
 			llCards: [],
 			hands: [], // this the cards this client has
 			left: {},
@@ -127,6 +128,14 @@ class Game extends React.Component {
 
 			<div className="row">
 				{/*<Scoreboard root={this} />*/}
+				<div className="column">
+					<div className="row">
+						<p className="firstLineInfo"><u> Landlord: {this.state.landlord} </u></p>
+					</div>
+					<div className="row">
+						<p className="firstLineInfo"><u> Current Player: {this.state.currentPlayer} </u></p>
+					</div>
+				</div>
 				<div className="column" align="center">
 				<LandlordCard renderCards={this.renderCards.bind(this)} data={this.state.llCards} />
 				</div>
