@@ -151,7 +151,9 @@ class Game extends React.Component {
 			<div className="row">
 				<div className="column" float="left">
 					<OpponentDealCard renderCards={this.renderCards.bind(this)} 
-						data={this.state.left} ob={this.state.ob}/>
+						data={this.state.left} 
+						ob={this.state.ob}
+						switch={this.switch_view.bind(this)}/>
 				</div>
 				<div className="column" float="right">
 					<OpponentDealCard renderCards={this.renderCards.bind(this)} 

@@ -262,6 +262,9 @@ defmodule Doudizhu.Game do
   end
 
   defp last_player(players, player) do
+    IO.inspect("last_player")
+    IO.inspect(players)
+    IO.inspect(player)
     index = players[player][:index] - 1
             |> (fn i -> if i < 0,  do: i + 3, else: i end).()
             |> rem(3)
