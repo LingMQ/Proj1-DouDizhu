@@ -1,3 +1,4 @@
+<body background="https://i.ibb.co/rcVMDKp/background.png">
 <script>
  window.gameName = "<%= @name %>";
  window.playerName = "<%= @player%>";
