@@ -29,7 +29,9 @@ defmodule DoudizhuWeb.RoomChannel do
 						{:ok, 
 						%{"game" => 
 						Game.client_view(game, 
-							Chat.get_player(game, user) |> elem(1)),
+							Chat.get_player(game, user) 
+							|> IO.inspect
+							|> elem(1)),
 						"text" => game[:history]
 						}, 
 						socket}
