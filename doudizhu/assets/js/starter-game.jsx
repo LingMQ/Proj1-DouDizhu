@@ -27,6 +27,7 @@ class Game extends React.Component {
 			ob: false,
 			readyButton: false,
 			bidLandlordButton: false,
+			beginGame: false,
 		};
 		
 		this.channel.join()
@@ -39,7 +40,7 @@ class Game extends React.Component {
 		this.channel.on("user_joined", this.get_view.bind(this));
 		this.channel.on("user_ready", this.get_view.bind(this));
 		this.channel.on("user_bid", this.get_view.bind(this));
-		this.channel.on("start_bid", this.get_view.bind(this));
+		this.channel.on("start_bid", this.get_state_bid_view.bind(this));
 		this.channel.on("update", this.get_view.bind(this));
 		this.channel.on("terminate", this.get_view.bind(this));
 
@@ -72,6 +73,10 @@ class Game extends React.Component {
 		} else {
 			this.setState(view.game);
 		}
+	}
+
+	get_state_bid_view(view) {
+		this.setState({beginGame: true});
 	}
 
 	tick() {
@@ -153,12 +158,14 @@ class Game extends React.Component {
 					<OpponentDealCard renderCards={this.renderCards.bind(this)} 
 						data={this.state.left} 
 						ob={this.state.ob}
+						beginGame={this.state.beginGame}
 						switch={this.switch_view.bind(this)}/>
 				</div>
 				<div className="column" float="right">
 					<OpponentDealCard renderCards={this.renderCards.bind(this)} 
 						data={this.state.right} 
 						ob={this.state.ob} 
+						beginGame={this.state.beginGame}
 						switch={this.switch_view.bind(this)}/>
 				</div>
 				<Chat display={this.state.ob} data={this.state.text}
@@ -206,7 +213,7 @@ function Chat(props) {
 			</div>
 			);
 	} else {
-		return <div></div>
+		return <div/>
 	}
 }
 
@@ -214,8 +221,45 @@ function OpponentDealCard(props) {
 	let cards = props.renderCards(props.data.last);
 	let p = props.data.player;
 	let text = "";
+	let cardLeftText = ""
 	if (props.data.ready) {
-		text = props.data.player + "is Ready!"
+		text = props.data.player + " is Ready!"
+	}
+
+	if (props.beginGame) {
+		cardLeftText = "Card Left: " +  props.data.leftC
+	}
+
+	let lastC = props.data.last
+	if (lastC === undefined) {
+		return (
+			<div>
+				<p className="player"> Player: {props.data.player}</p>
+				<p className="player"> Score: {props.data.total}</p>
+				<p>{text}</p>
+			</div>
+		);
+	} else if (lastC.length === 0) {
+		if (props.beginGame) {
+			let passCard = (require("./card").dict)["pass"]
+			return (
+				<div>
+					<p className="player"> Player: {props.data.player}</p>
+					<p className="player"> Score: {props.data.total}</p>
+					<p> {cardLeftText} </p>
+					<img src={passCard} width="58" height="108"/>
+				</div>
+			);
+		} else {
+			return (
+				<div>
+					<p className="player"> Player: {props.data.player}</p>
+					<p className="player"> Score: {props.data.total}</p>
+					<p> {cardLeftText} </p>
+					<p>{text}</p>
+				</div>
+			);
+		}
 	}
 
 	if (props.ob) {
@@ -232,6 +276,7 @@ function OpponentDealCard(props) {
 		<div>
 			<p className="player"> Player: {p}</p>
 			<p className="player"> Score: {props.data.total}</p>
+			<p> {cardLeftText} </p>
 			<p>{text}</p>
 			<p>{cards}</p>
 		</div>
