@@ -73,6 +73,16 @@ defmodule DoudizhuWeb.RoomChannel do
 		{:noreply, socket}
 	end
 
+	def handle_out("terminate", game, socket) do
+		{t, u} = view_user(game, socket.assigns[:user])
+		push(socket, msg, 
+			%{} 
+			|> Map.put("game", Game.client_view(game, u))
+			|> Map.put("winner", game[:winner])
+			|> Map.put("type", t))
+		{:noreply, socket}
+	end
+
 	def handle_out(msg, game, socket) do
 		{t, u} = view_user(game, socket.assigns[:user])
 		push(socket, msg, 
