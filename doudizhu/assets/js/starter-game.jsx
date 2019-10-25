@@ -230,6 +230,7 @@ function OpponentDealCard(props) {
 	let p = props.data.player;
 	let text = "";
 	let cardLeftText = ""
+
 	if (props.data.ready) {
 		text = props.data.player + " is Ready!"
 	}
@@ -238,11 +239,13 @@ function OpponentDealCard(props) {
 		cardLeftText = "Card Left: " +  props.data.leftC
 	}
 
+
+
 	let lastC = props.data.last
 	if (lastC === undefined) {
 		return (
 			<div>
-				<p className="player"> Player: {props.data.player}</p>
+				<Player ob={props.ob} switch={props.switch} p={p}/>
 				<p className="player"> Score: {props.data.total}</p>
 				<p>{text}</p>
 			</div>
@@ -252,7 +255,7 @@ function OpponentDealCard(props) {
 			let passCard = (require("./card").dict)["pass"]
 			return (
 				<div>
-					<p className="player"> Player: {props.data.player}</p>
+					<Player ob={props.ob} switch={props.switch} p={p}/>
 					<p className="player"> Score: {props.data.total}</p>
 					<p> {cardLeftText} </p>
 					<img src={passCard} width="58" height="108"/>
@@ -261,7 +264,7 @@ function OpponentDealCard(props) {
 		} else {
 			return (
 				<div>
-					<p className="player"> Player: {props.data.player}</p>
+					<Player ob={props.ob} switch={props.switch} p={p}/>
 					<p className="player"> Score: {props.data.total}</p>
 					<p> {cardLeftText} </p>
 					<p>{text}</p>
@@ -270,25 +273,14 @@ function OpponentDealCard(props) {
 		}
 	}
 
+}
+
+function Player(props) {
 	if (props.ob) {
-		return (
-		<div>
-			<p><button className="handoutButton"
-					onClick={() => props.switch(p)}>Watch {p}</button></p>
-			<p className="player"> Score: {props.data.total}</p>
-			<p>{text}</p>
-			<p>{cards}</p>
-		</div>);
+		return (<p><button className="switchButton"
+							 onClick={() => props.switch(props.p)}>Watch {props.p}</button></p>);
 	} else {
-		return (
-		<div>
-			<p className="player"> Player: {p}</p>
-			<p className="player"> Score: {props.data.total}</p>
-			<p> {cardLeftText} </p>
-			<p>{text}</p>
-			<p>{cards}</p>
-		</div>
-	);
+		return (<p className="player"> Player: {props.p}</p>);
 	}
 }
 
