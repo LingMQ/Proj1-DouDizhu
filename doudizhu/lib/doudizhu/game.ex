@@ -141,12 +141,16 @@ defmodule Doudizhu.Game do
   def play_cards(game, []) do
     state = game[:state]
     player = state[:current_player]
+
     case state[:last_valid] do
       {} -> {:error, game}
       {^player, _} -> {:error, game}
       _ -> 
         # next round, shift current player
+        index = game[:players][player][:index]
+        last = List.replace_at(state[:last], index, [])
         state = %{state | current_player: next_player(game[:players], player),
+                          last: last,
                           current_round: state[:current_round] + 1}
         {:ok, Map.put(game, :state, state)}
     end

@@ -205,6 +205,29 @@ function OpponentDealCard(props) {
 	if (props.data.ready) {
 		text = props.data.player + " is Ready!"
 	}
+
+	let lastC = props.data.last
+	console.log(props.data)
+	if (lastC === undefined) {
+		return (
+			<div>
+				<p className="player"> Player: {props.data.player}</p>
+				<p className="player"> Score: {props.data.total}</p>
+				<p>{text}</p>
+			</div>
+		);
+	} else if (lastC.length === 0) {
+		let passCard = (require("./card").dict)["pass"]
+		return (
+			<div>
+				<p className="player"> Player: {props.data.player}</p>
+				<p className="player"> Score: {props.data.total}</p>
+				<p> Card Left: {props.data.leftC}</p>
+				<img src={passCard} width="58" height="108"/>
+				<p>{text}</p>
+			</div>
+		);
+	}
 	return (
 		<div>
 			<p className="player"> Player: {props.data.player}</p>
