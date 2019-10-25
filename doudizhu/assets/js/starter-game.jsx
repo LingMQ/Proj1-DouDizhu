@@ -203,12 +203,13 @@ function OpponentDealCard(props) {
 	let cards = props.renderCards(props.data.last)
 	let text = ""
 	if (props.data.ready) {
-		text = props.data.player + "is Ready!"
+		text = props.data.player + " is Ready!"
 	}
 	return (
 		<div>
 			<p className="player"> Player: {props.data.player}</p>
 			<p className="player"> Score: {props.data.total}</p>
+			<p> Card Left: {props.data.leftC}</p>
 			<p>{text}</p>
 			<p>{cards}</p>
 		</div>

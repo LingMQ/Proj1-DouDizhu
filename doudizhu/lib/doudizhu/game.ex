@@ -213,7 +213,11 @@ defmodule Doudizhu.Game do
         nil -> []
         s -> s[:last] |> Enum.at(p[:index])
       end
-      %{player: player, last: last, total: p[:total], ready: p[:ready]}
+      l = case Map.get(game, :state) do
+        nil -> 0
+        s -> s[:hands] |> Enum.at(p[:index]) |> length()
+      end
+      %{player: player, last: last, total: p[:total], ready: p[:ready], leftC: l}
     end
   end
 
