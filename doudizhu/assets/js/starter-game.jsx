@@ -203,8 +203,8 @@ function OpponentDealCard(props) {
 	let cards = props.renderCards(props.data.last)
 	return (
 		<div>
-			<p className="player">{props.data.player}</p>
-			<p className="player"> {props.data.total}</p>
+			<p className="player"> Player: {props.data.player}</p>
+			<p className="player"> Score: {props.data.total}</p>
 			<p>{cards}</p>
 		</div>
 	);
@@ -214,8 +214,8 @@ function MyDealCard(props) {
 	let cards = props.root.renderCards(props.data.last)
 	return (
 		<div>
-			<p className="player"> {props.data.player}</p>
-			<p className="player"> score: {props.data.total}</p>
+			<p className="player"> Player: {props.data.player}</p>
+			<p className="player"> Score: {props.data.total}</p>
 			<p>{cards}</p>
 		</div>
 		);

@@ -226,7 +226,8 @@ defmodule Doudizhu.Game do
         landlord: s[:landlord],
         llCards: s[:hands] |> Enum.at(3),
         hands: s[:hands] |> Enum.at(index),
-        base: s[:base]
+        base: s[:base],
+        currentPlayer: s[:current_player]
       }
     end
   end
