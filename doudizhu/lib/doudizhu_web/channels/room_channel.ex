@@ -75,7 +75,7 @@ defmodule DoudizhuWeb.RoomChannel do
 
 	def handle_out("terminate", game, socket) do
 		{t, u} = view_user(game, socket.assigns[:user])
-		push(socket, msg, 
+		push(socket, "terminate", 
 			%{} 
 			|> Map.put("game", Game.client_view(game, u))
 			|> Map.put("winner", game[:winner])
