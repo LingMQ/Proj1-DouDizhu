@@ -144,7 +144,7 @@ defmodule DoudizhuWeb.RoomChannel do
 		case GameServer.set_player(name, user, player) do
 			{:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
 			{:ok, game} -> {:ok, 
-				%{"game" => Game.client_view(game, player)}}, socket}
+				%{"game" => Game.client_view(game, player)}, socket}
 		end
 	end
 
