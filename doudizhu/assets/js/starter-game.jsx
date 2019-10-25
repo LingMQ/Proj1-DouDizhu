@@ -218,14 +218,17 @@ function OpponentDealCard(props) {
 		text = props.data.player + "is Ready!"
 	}
 
-	let btn = "";
-
 	if (props.ob) {
-		btn = (<button className="handoutButton"
-					onClick={() => props.switch(p)}>Watch {p}</button>);
-	}
-
-	return (
+		<div>
+			<button className="handoutButton"
+					onClick={() => props.switch(p)}>Watch {p}</button>
+			<p>{btn}</p>
+			<p className="player"> Score: {props.data.total}</p>
+			<p>{text}</p>
+			<p>{cards}</p>
+		</div>
+	} else {
+		return (
 		<div>
 			<p className="player"> Player: {p}</p>
 			<p>{btn}</p>
@@ -234,6 +237,7 @@ function OpponentDealCard(props) {
 			<p>{cards}</p>
 		</div>
 	);
+	}
 }
 
 function MyDealCard(props) {

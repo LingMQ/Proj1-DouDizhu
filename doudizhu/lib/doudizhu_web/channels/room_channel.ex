@@ -187,7 +187,7 @@ defmodule DoudizhuWeb.RoomChannel do
 			{"p", user}
 		else 
 			case Chat.get_player(game, user) do
-				{:error, reason} -> {"undefine", nil}
+				{:error, _} -> {"undefine", nil}
 				{:ok, u} -> {"o", u}
 			end
 		end
