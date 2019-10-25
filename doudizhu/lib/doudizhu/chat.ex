@@ -23,7 +23,7 @@ defmodule Doudizhu.Chat do
 
 	def add_text(game, ob, text) do
 		if Map.has_key?(game[:observers], ob) do
-			{:ok, %{game | history: game[:history] ++ [ob, text]}}
+			{:ok, %{game | history: game[:history] ++ [[ob, text]]}}
 		else
 			{:error, "No such observer!"}
 		end
