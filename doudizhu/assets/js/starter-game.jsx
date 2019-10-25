@@ -28,6 +28,7 @@ class Game extends React.Component {
 			readyButton: false,
 			bidLandlordButton: false,
 			beginGame: false,
+			endGame: false,
 		};
 		
 		this.channel.join()
@@ -42,7 +43,7 @@ class Game extends React.Component {
 		this.channel.on("user_bid", this.get_view.bind(this));
 		this.channel.on("start_bid", this.get_state_bid_view.bind(this));
 		this.channel.on("update", this.get_view.bind(this));
-		this.channel.on("terminate", this.get_view.bind(this));
+		this.channel.on("terminate", this.get_terminate_view.bind(this));
 
 		this.channel.on("new_msg", this.new_msg.bind(this));
 	}
@@ -75,7 +76,14 @@ class Game extends React.Component {
 		}
 	}
 
+	get_terminate_view(view) {
+		this.get_view(view)
+		this.setState({endGame: true, beginGame: false})
+		window.alert("The winner is " + view.winner);
+	}
+
 	get_state_bid_view(view) {
+		this.get_view(view)
 		this.setState({beginGame: true});
 	}
 

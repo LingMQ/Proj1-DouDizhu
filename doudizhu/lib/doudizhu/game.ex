@@ -187,24 +187,28 @@ defmodule Doudizhu.Game do
   # If it is, return a new game state with the updated winner,
   # player information, which is a state before preparing for a new game.
   def terminated(game) do
-    wi = game
-        |> Map.get(:state)
-        |> Map.get(:hands)
-        |> Enum.find_index(&Enum.empty?/1)
-    case wi do
-      nil -> {false, game}
-      w -> base = game[:state][:base]
-           landlord = Map.get(game[:players], game[:state][:landlord]) 
-                      |> Map.get(:index)
-           p = game[:players]
-           |> Enum.map(fn {k, v} -> # {player, %{index:, ready:, total:} 
-                {k, update_score(w, v, base, landlord)} 
-              end)
-           |> Map.new
-           winner = game[:players] 
-           |> Enum.find(fn {_, v} -> v[:index] == wi end)
-           |> elem(0)
-           {true, %{game | players: p, winner: winner}}
+    if Map.has_key?(game, :state) do
+      wi = game
+           |> Map.get(:state)
+           |> Map.get(:hands)
+           |> Enum.find_index(&Enum.empty?/1)
+      case wi do
+        nil -> {false, game}
+        w -> base = game[:state][:base]
+             landlord = Map.get(game[:players], game[:state][:landlord])
+                        |> Map.get(:index)
+             p = game[:players]
+                 |> Enum.map(fn {k, v} -> # {player, %{index:, ready:, total:}
+               {k, update_score(w, v, base, landlord)}
+             end)
+                 |> Map.new
+             winner = game[:players]
+                      |> Enum.find(fn {_, v} -> v[:index] == wi end)
+                      |> elem(0)
+             {true, %{game | players: p, winner: winner}}
+      end
+    else
+      {false, game}
     end
   end
 
