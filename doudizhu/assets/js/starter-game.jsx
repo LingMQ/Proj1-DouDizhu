@@ -39,6 +39,8 @@ class Game extends React.Component {
 		this.channel.on("start_bid", this.get_view.bind(this));
 		this.channel.on("update", this.get_view.bind(this));
 		this.channel.on("terminate", this.get_view.bind(this));
+
+		this.channel.on("new_msg", this.new_msg.bind(this));
 	}
 
 	renderCards(cards) {
@@ -81,10 +83,13 @@ class Game extends React.Component {
 	submit(ev) {
 		let chatIn = document.querySelector("#chat-input")
 		if (ev.charCode === 13) {
-			console.log("press enter");
 			this.channel.push("chat", {text: chatIn.value});
 			chatIn.value = "";
 		}
+	}
+
+	new_msg(msg) {
+		this.setState(msg);
 	}
 
 	ready() {
