@@ -96,13 +96,15 @@ defmodule DoudizhuWeb.RoomChannel do
 	def handle_in("ready", _, socket) do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
-		game = GameServer.peek(name)
-		{t, _} = view_user(game, socket.assigns[:user])
-		if t == "p" do
-			case GameServer.ready(name, user) do
-				{:ready, game} -> broadcast!(socket, "user_ready", game)
-				{:go, game} -> broadcast_limited("start_bid", 
-					{:assign, name}, game, 15, socket)
+		if GameServer.terminate(name) |> elem(0) do
+			game = GameServer.peek(name)
+			{t, _} = view_user(game, socket.assigns[:user])
+			if t == "p" do
+				case GameServer.ready(name, user) do
+					{:ready, game} -> broadcast!(socket, "user_ready", game)
+					{:go, game} -> broadcast_limited("start_bid", 
+						{:assign, name}, game, 15, socket)
+				end
 			end
 		end
 		{:noreply, socket}
