@@ -163,7 +163,7 @@ function Chat(props) {
 			let t = props.data[i][1];
 			m.push(
 				<li> {u}: {t} </li>
-				)
+				);
 		}
 		return (
 			<div className= "row">

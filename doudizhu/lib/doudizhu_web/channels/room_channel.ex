@@ -62,6 +62,7 @@ defmodule DoudizhuWeb.RoomChannel do
 
 	def handle_out("new_text", game, socket) do
 		his = game[:history]
+		|> IO.inspect
 		user = socket.assigns[:user]
 		{t, _} = view_user(game, user)
 		if t == "o" do
