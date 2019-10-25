@@ -251,7 +251,6 @@ defmodule Doudizhu.Game do
   # %{index: , ready: , total:}
   defp update_score(winner, info, base, landlord) do
     base = if winner != landlord, do: -base, else: base
-    |> IO.inspect
     case info[:index] do
       ^landlord -> %{index: landlord, 
                     ready: false, 
@@ -333,7 +332,6 @@ defmodule Doudizhu.Game do
     |> Enum.at(index)
     |> (&(&1 -- cards)).()
     |> (&(List.replace_at(state[:hands], index, &1))).()
-    |> IO.inspect
     last = List.replace_at(state[:last], index, cards)
     base = case feature do
       :rocket -> 2 * state[:base]

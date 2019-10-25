@@ -29,7 +29,9 @@ defmodule DoudizhuWeb.RoomChannel do
 						{:ok, 
 						%{"game" => 
 						Game.client_view(game, 
-							Chat.get_player(game, user) |> elem(1))}, 
+							Chat.get_player(game, user) |> elem(1)),
+						"text" => game[:history]
+						}, 
 						socket}
 				end
 			{:ok, game} -> socket = socket 
@@ -62,7 +64,6 @@ defmodule DoudizhuWeb.RoomChannel do
 
 	def handle_out("new_text", game, socket) do
 		his = game[:history]
-		|> IO.inspect
 		user = socket.assigns[:user]
 		{t, _} = view_user(game, user)
 		if t == "o" do

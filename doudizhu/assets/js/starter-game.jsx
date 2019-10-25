@@ -59,7 +59,7 @@ class Game extends React.Component {
 	init_ob(view) {
 		if (view.game) {
 			this.setState(view.game);
-			this.setState({ob: true})
+			this.setState({ob: true, text: view.text})
 		}
 	}
 
@@ -93,6 +93,11 @@ class Game extends React.Component {
 
 	new_msg(msg) {
 		this.setState(msg);
+	}
+
+	switch_view(player) {
+		this.channel.push("switch", {player: player})
+					.receive("ok", (view) => (this.setState(view.game)))
 	}
 
 	ready() {
@@ -145,10 +150,14 @@ class Game extends React.Component {
 			</div>
 			<div className="row">
 				<div className="column" float="left">
-					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.left} />
+					<OpponentDealCard renderCards={this.renderCards.bind(this)} 
+						data={this.state.left} ob={this.state.ob}/>
 				</div>
 				<div className="column" float="right">
-					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.right} />
+					<OpponentDealCard renderCards={this.renderCards.bind(this)} 
+						data={this.state.right} 
+						ob={this.state.ob} 
+						switch={this.switch_view.bind(this)}/>
 				</div>
 				<Chat display={this.state.ob} data={this.state.text}
 					  onKeyPress={this.submit.bind(this)}/>
@@ -200,14 +209,24 @@ function Chat(props) {
 }
 
 function OpponentDealCard(props) {
-	let cards = props.renderCards(props.data.last)
-	let text = ""
+	let cards = props.renderCards(props.data.last);
+	let p = props.data.player;
+	let text = "";
 	if (props.data.ready) {
 		text = props.data.player + "is Ready!"
 	}
+
+	let btn = "";
+
+	if (props.ob) {
+		btn = (<button className="handoutButton"
+					onClick={() => props.swtich(p)}>Watch {p}</button>);
+	}
+
 	return (
 		<div>
-			<p className="player"> Player: {props.data.player}</p>
+			<p className="player"> Player: {p}</p>
+			<p>{btn}</p>
 			<p className="player"> Score: {props.data.total}</p>
 			<p>{text}</p>
 			<p>{cards}</p>
