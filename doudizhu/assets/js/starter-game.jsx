@@ -157,6 +157,7 @@ class Game extends React.Component {
 function Chat(props) {
 	if (props.display) {
 		let m = [];
+		console.log(props);
 		for (let i = 0; i < props.data.length; i++) {
 			let u = props.data[i][0];
 			let t = props.data[i][1];
