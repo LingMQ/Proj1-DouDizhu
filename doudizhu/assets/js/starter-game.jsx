@@ -27,7 +27,7 @@ class Game extends React.Component {
 		};
 		
 		this.channel.join()
-				.receive("ok", () => this.init_ob.bind(this))
+				.receive("ok", this.init_ob.bind(this))
 				// TODO: display the reason
 				.receive("error", resp => {console.log("Can't join!", resp)});
 
