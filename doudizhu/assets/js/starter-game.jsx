@@ -80,9 +80,7 @@ class Game extends React.Component {
 
 	submit(ev) {
 		let chatIn = document.querySelector("#chat-input")
-		console.log(chatIn.value);
-		console.log(ev.charCode);
-		if (ev.keyCode == 13) {
+		if (ev.charCode === 13) {
 			console.log("press enter");
 			channel.push("chat", {text: chatIn.value});
 			chatIn.value = "";
