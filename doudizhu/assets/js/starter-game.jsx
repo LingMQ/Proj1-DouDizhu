@@ -22,10 +22,12 @@ class Game extends React.Component {
 			selected: [],
 			base: 3,
 			time: 0,
+			messages: [],
+			ob: false
 		};
 		
 		this.channel.join()
-				.receive("ok", () => {console.log(this.state)})
+				.receive("ok", () => this.init_ob.bind(this))
 				// TODO: display the reason
 				.receive("error", resp => {console.log("Can't join!", resp)});
 
@@ -49,6 +51,13 @@ class Game extends React.Component {
 	    return c;
 	}
 
+	init_ob(view) {
+		if (view.game) {
+			this.setState(view.game);
+			this.setState({ob: true})
+		}
+	}
+
 	get_view(view) {
 		if (view.time) {
 			this.setState(view.game);
@@ -67,6 +76,14 @@ class Game extends React.Component {
 			clearInterval(this.timeId);
 		}
 		this.setState(_.extend(this.state, {time: time}));
+	}
+
+	submit(ev) {
+		let chatIn = document.querySelector("#chat-input")
+		if (ev.keyCode === 13) {
+			channel.push("chat", {text: chatIn.value});
+			chatIn.value = "";
+		}
 	}
 
 	ready() {
@@ -124,8 +141,30 @@ class Game extends React.Component {
 					selected={this.state.selected}
 					onSelect={this.onSelect.bind(this)} />
 			</div>
+			<Chat display={this.state.ob} data={this.state.messages}
+				onKeyPress={this.submit.bind(this)}/>
 		</div>
 		);
+	}
+}
+
+function Chat(props) {
+	if (props.display) {
+		let m = [];
+		for (let i = 0; i < props.data.length; i++) {
+			let u = props.data[i][0];
+			let t = props.data[i][1];
+			m.push(
+				<li> {u}: {t} </li>
+				)
+		}
+		return (
+			<div className= "row">
+				<ul>{m} </ul>
+				<input type="text" id="chat-input" 
+					onKeyPress={props.onKeyPress} />
+			</div>
+			);
 	}
 }
 
