@@ -141,16 +141,12 @@ defmodule Doudizhu.Game do
   def play_cards(game, []) do
     state = game[:state]
     player = state[:current_player]
-
     case state[:last_valid] do
       {} -> {:error, game}
       {^player, _} -> {:error, game}
       _ -> 
         # next round, shift current player
-        index = game[:players][player][:index]
-        last = List.replace_at(state[:last], index, [])
         state = %{state | current_player: next_player(game[:players], player),
-                          last: last,
                           current_round: state[:current_round] + 1}
         {:ok, Map.put(game, :state, state)}
     end
@@ -187,28 +183,36 @@ defmodule Doudizhu.Game do
   # If it is, return a new game state with the updated winner,
   # player information, which is a state before preparing for a new game.
   def terminated(game) do
+    wi = game
+        |> Map.get(:state)
+        |> Map.get(:hands)
+        |> Enum.find_index(&Enum.empty?/1)
+    case wi do
+      nil -> {false, game}
+      w -> base = game[:state][:base]
+           landlord = Map.get(game[:players], game[:state][:landlord]) 
+                      |> Map.get(:index)
+           p = game[:players]
+           |> Enum.map(fn {k, v} -> # {player, %{index:, ready:, total:} 
+                {k, update_score(w, v, base, landlord)} 
+              end)
+           |> Map.new
+           winner = game[:players] 
+           |> Enum.find(fn {_, v} -> v[:index] == wi end)
+           |> elem(0)
+           {true, %{game | players: p, winner: winner}}
+    end
+  end
+
+  def not_playing(game) do
     if Map.has_key?(game, :state) do
-      wi = game
-           |> Map.get(:state)
-           |> Map.get(:hands)
-           |> Enum.find_index(&Enum.empty?/1)
-      case wi do
-        nil -> {false, game}
-        w -> base = game[:state][:base]
-             landlord = Map.get(game[:players], game[:state][:landlord])
-                        |> Map.get(:index)
-             p = game[:players]
-                 |> Enum.map(fn {k, v} -> # {player, %{index:, ready:, total:}
-               {k, update_score(w, v, base, landlord)}
-             end)
-                 |> Map.new
-             winner = game[:players]
-                      |> Enum.find(fn {_, v} -> v[:index] == wi end)
-                      |> elem(0)
-             {true, %{game | players: p, winner: winner}}
-      end
+      game
+      |> Map.get(:state)
+      |> Map.get(:hands)
+      |> Enum.find_index(&Enum.empty?/1)
+      |> is_nil
     else
-      {false, game}
+      true
     end
   end
 
@@ -232,11 +236,7 @@ defmodule Doudizhu.Game do
         nil -> []
         s -> s[:last] |> Enum.at(p[:index])
       end
-      l = case Map.get(game, :state) do
-        nil -> 0
-        s -> s[:hands] |> Enum.at(p[:index]) |> length()
-      end
-      %{player: player, last: last, total: p[:total], ready: p[:ready], leftC: l}
+      %{player: player, last: last, total: p[:total], ready: p[:ready]}
     end
   end
 

@@ -96,8 +96,8 @@ defmodule DoudizhuWeb.RoomChannel do
 	def handle_in("ready", _, socket) do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
-		if GameServer.terminate(name) |> elem(0) do
-			game = GameServer.peek(name)
+		game = GameServer.peek(name)
+		if not_playing(game) do
 			{t, _} = view_user(game, socket.assigns[:user])
 			if t == "p" do
 				case GameServer.ready(name, user) do
