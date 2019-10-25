@@ -272,6 +272,15 @@ function OpponentDealCard(props) {
 			);
 		}
 	}
+	return (
+		<div>
+			<Player ob={props.ob} switch={props.switch} p={p}/>
+			<p className="player"> Score: {props.data.total}</p>
+			<p> {cardLeftText} </p>
+			<p>{text}</p>
+			<p>{cards}</p>
+		</div>
+	);
 
 }
 
