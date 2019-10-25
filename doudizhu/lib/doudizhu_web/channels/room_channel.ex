@@ -26,13 +26,10 @@ defmodule DoudizhuWeb.RoomChannel do
 						socket = socket 
 						|> assign(:name, name) 
 						|> assign(:user, user)
-
-						IO.inspect(game)
 						{:ok, 
 						%{"game" => 
 						Game.client_view(game, 
 							Chat.get_player(game, user) 
-							|> IO.inspect
 							|> elem(1)),
 						"text" => game[:history]
 						}, 
