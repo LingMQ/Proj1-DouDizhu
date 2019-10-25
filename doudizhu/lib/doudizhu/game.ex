@@ -74,10 +74,14 @@ defmodule Doudizhu.Game do
   Return the new game state
   """
   def init_game(game) do
-    new_state()
+    game = new_state()
     |> Map.put(:hands, deal_cards())
     |> Map.put(:bid, [])
     |> (&(Map.put(game, :state, &1))).()
+    p = game[:players]
+    |> Enum.map(fn{k, v} -> {k, %{v | ready: false}} end)
+    |> Map.new
+    Map.put(game, :players, p)
   end
 
   @doc """
@@ -209,7 +213,7 @@ defmodule Doudizhu.Game do
         nil -> []
         s -> s[:last] |> Enum.at(p[:index])
       end
-      %{player: player, last: last, total: p[:total]}
+      %{player: player, last: last, total: p[:total], ready: p[:ready]}
     end
   end
 
@@ -227,7 +231,7 @@ defmodule Doudizhu.Game do
         llCards: s[:hands] |> Enum.at(3),
         hands: s[:hands] |> Enum.at(index),
         base: s[:base],
-        currentPlayer: s[:current_player]
+        currentPlayer: s[:current_player],
       }
     end
   end

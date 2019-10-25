@@ -26,7 +26,7 @@ class Game extends React.Component {
 			text: [],
 			ob: false,
 			readyButton: false,
-			bidLandlordButton: false
+			bidLandlordButton: false,
 		};
 		
 		this.channel.join()
@@ -201,10 +201,15 @@ function Chat(props) {
 
 function OpponentDealCard(props) {
 	let cards = props.renderCards(props.data.last)
+	let text = ""
+	if (props.data.ready) {
+		text = props.data.player + "is Ready!"
+	}
 	return (
 		<div>
 			<p className="player"> Player: {props.data.player}</p>
 			<p className="player"> Score: {props.data.total}</p>
+			<p>{text}</p>
 			<p>{cards}</p>
 		</div>
 	);
@@ -212,10 +217,15 @@ function OpponentDealCard(props) {
 
 function MyDealCard(props) {
 	let cards = props.root.renderCards(props.data.last)
+	let text = ""
+	if (props.data.ready) {
+		text = "I am Ready!"
+	}
 	return (
 		<div>
 			<p className="player"> Player: {props.data.player}</p>
 			<p className="player"> Score: {props.data.total}</p>
+			<p>{text}</p>
 			<p>{cards}</p>
 		</div>
 		);
