@@ -14,7 +14,10 @@ defmodule Doudizhu.Chat do
 	def add_observer(game, ob) do
 		if !Map.has_key?(game[:players], ob) do
 			obs = game[:observers]
-			|> Map.put(ob, game[:players] |> Map.values |> hd)
+			|> Map.put(ob, game[:players] 
+				|> Map.values 
+				|> hd 
+				|> Map.get(:index))
 			{:ok, %{game | observers: obs}}
 		else
 			{:error, "Duplicate name!"}
