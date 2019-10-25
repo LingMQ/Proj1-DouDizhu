@@ -165,6 +165,8 @@ function Chat(props) {
 					onKeyPress={props.onKeyPress} />
 			</div>
 			);
+	} else {
+		return <div></div>
 	}
 }
 
