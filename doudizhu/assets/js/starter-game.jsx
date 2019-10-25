@@ -222,7 +222,7 @@ function OpponentDealCard(props) {
 
 	if (props.ob) {
 		btn = (<button className="handoutButton"
-					onClick={() => props.swtich(p)}>Watch {p}</button>);
+					onClick={() => props.switch(p)}>Watch {p}</button>);
 	}
 
 	return (
