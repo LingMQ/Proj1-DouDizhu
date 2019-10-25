@@ -22,7 +22,7 @@ class Game extends React.Component {
 			selected: [],
 			base: 3,
 			time: 0,
-			messages: [],
+			text: [],
 			ob: false
 		};
 		
@@ -147,7 +147,7 @@ class Game extends React.Component {
 					selected={this.state.selected}
 					onSelect={this.onSelect.bind(this)} />
 			</div>
-			<Chat display={this.state.ob} data={this.state.messages}
+			<Chat display={this.state.ob} data={this.state.text}
 				onKeyPress={this.submit.bind(this)}/>
 		</div>
 		);
