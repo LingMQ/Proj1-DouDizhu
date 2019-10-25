@@ -186,7 +186,10 @@ defmodule DoudizhuWeb.RoomChannel do
 		if Map.has_key?(p, user) do
 			{"p", user}
 		else 
-			{"o", Chat.get_player(game, user)}
+			case Chat.get_player(game, user) do
+				{:error, reason} -> {"undefine", nil}
+				{:ok, u} -> {"o", u}
+			end
 		end
 	end
 
