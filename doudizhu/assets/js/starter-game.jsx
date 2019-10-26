@@ -129,7 +129,6 @@ class Game extends React.Component {
 	}
 
 	onSelect(card) {
-		console.log(card);
 		let s = this.state.selected.concat([]);
 		if (s.includes(card)) {
 			s.splice(s.indexOf(card), 1);

@@ -92,11 +92,12 @@ defmodule DoudizhuWeb.RoomChannel do
 		{:noreply, socket}
 	end
 
-	# TODO: for ready, we can just reply with 
 	def handle_in("ready", _, socket) do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
 		game = GameServer.peek(name)
+		IO.inspect(game)
+		IO.inspect("++++++++++++++++")
 		if Game.not_playing(game) do
 			IO.inspect(game)
 			{t, _} = view_user(game, socket.assigns[:user])
