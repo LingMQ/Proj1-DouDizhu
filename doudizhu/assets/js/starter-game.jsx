@@ -78,13 +78,13 @@ class Game extends React.Component {
 
 	get_terminate_view(view) {
 		this.get_view(view)
-		this.setState({endGame: true, beginGame: false})
+		this.setState({endGame: true, beginGame: false, readyButton: false})
 		window.alert("The winner is " + view.winner);
 	}
 
 	get_state_bid_view(view) {
 		this.get_view(view)
-		this.setState({beginGame: true});
+		this.setState({beginGame: true, bidLandlordButton: false});
 	}
 
 	tick() {
