@@ -1,8 +1,8 @@
-## Dou Dizhu Game (Fighting Landlord)
+# Dou Dizhu Game (Fighting Landlord)
 
 We are building a popular Chinese card game -- Dou Dizhu. It’s a three-person game, and the objective is to be the first person hands out all his or her cards! More information about this game can be found at [Doudizhu](https://en.wikipedia.org/wiki/Dou_dizhu).
 
-#### Cool feature our game has (in chronological order of game process)
+## Cool feature our game has (in chronological order of game process)
  - Enter the username and game room name to enter a room
  - If the room has less than 3 players, you will be joining the game as a **player**
  - If the room has more than 3 players, you will be joining the game as an **observer**. You could choose which player’s perspective to view. Also, observers can chat with other observers, while players cannot join the chat or see the message from others.
@@ -13,7 +13,7 @@ We are building a popular Chinese card game -- Dou Dizhu. It’s a three-person 
  - While the game is over, it will report the winner and enter the pre-start state, player can click **“ready”** to play the next game.
  - The observer can switch the view by clicking player’s name. In the observer’s screen, there are also a chatting bar. Observers can use this chatting bar to communicate with other observers. 
 
-#### Basic instruction
+## Basic instruction
 When in you turn, you need to hand out the same type of playing as the last player(if there is, excluding skipping), and it must has higher rank.
 
 The rank and type can be found in followed table: 
@@ -50,3 +50,22 @@ Colored Joker > Black & White Joker > 2 > Ace (A) > King (K) > Queen (Q) > Jack 
 - The basic rule is the winner takes points from loser or losers. The landlord pay for both peasants if lost, or charge both of them if winning.
 
 - Each Rocket/bomb will double the score in a round.
+
+## To start this project:
+
+  * Install dependencies with `mix deps.get`
+  * Create and migrate your database with `mix ecto.setup`
+  * Install Node.js dependencies with `cd assets && npm install`
+  * Start Phoenix endpoint with `mix phx.server`
+
+Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+
+Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+
+## Learn more
+
+  * Official website: http://www.phoenixframework.org/
+  * Guides: https://hexdocs.pm/phoenix/overview.html
+  * Docs: https://hexdocs.pm/phoenix
+  * Mailing list: http://groups.google.com/group/phoenix-talk
+  * Source: https://github.com/phoenixframework/phoenix
