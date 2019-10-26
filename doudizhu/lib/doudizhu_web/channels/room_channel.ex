@@ -29,7 +29,10 @@ defmodule DoudizhuWeb.RoomChannel do
 						{:ok, 
 						%{"game" => 
 						Game.client_view(game, 
-							Chat.get_player(game, user) |> elem(1))}, 
+							Chat.get_player(game, user) 
+							|> elem(1)),
+						"text" => game[:history]
+						}, 
 						socket}
 				end
 			{:ok, game} -> socket = socket 
@@ -62,7 +65,6 @@ defmodule DoudizhuWeb.RoomChannel do
 
 	def handle_out("new_text", game, socket) do
 		his = game[:history]
-		|> IO.inspect
 		user = socket.assigns[:user]
 		{t, _} = view_user(game, user)
 		if t == "o" do
@@ -71,9 +73,19 @@ defmodule DoudizhuWeb.RoomChannel do
 		{:noreply, socket}
 	end
 
+	def handle_out("terminate", game, socket) do
+		{t, u} = view_user(game, socket.assigns[:user])
+		push(socket, "terminate", 
+			%{} 
+			|> Map.put("game", Game.client_view(game, u))
+			|> Map.put("winner", game[:winner])
+			|> Map.put("type", t))
+		{:noreply, socket}
+	end
+
 	def handle_out(msg, game, socket) do
 		{t, u} = view_user(game, socket.assigns[:user])
-		push(socket, "update", 
+		push(socket, msg, 
 			%{} 
 			|> Map.put("game", Game.client_view(game, u))
 			|> Map.put("type", t))
@@ -85,12 +97,14 @@ defmodule DoudizhuWeb.RoomChannel do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
 		game = GameServer.peek(name)
-		{t, u} = view_user(game, socket.assigns[:user])
-		if t == "p" do
-			case GameServer.ready(name, user) do
-				{:ready, game} -> broadcast!(socket, "user_ready", game)
-				{:go, game} -> broadcast_limited("start_bid", 
-					{:assign, name}, game, 15, socket)
+		if Game.not_playing(game) do
+			{t, _} = view_user(game, socket.assigns[:user])
+			if t == "p" do
+				case GameServer.ready(name, user) do
+					{:ready, game} -> broadcast!(socket, "user_ready", game)
+					{:go, game} -> broadcast_limited("start_bid", 
+						{:assign, name}, game, 15, socket)
+				end
 			end
 		end
 		{:noreply, socket}
@@ -100,7 +114,7 @@ defmodule DoudizhuWeb.RoomChannel do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
 		game = GameServer.peek(name)
-		{t, u} = view_user(game, socket.assigns[:user])
+		{t, _} = view_user(game, socket.assigns[:user])
 		if t == "p" do
 			broadcast!(socket, "user_bid", GameServer.bid(name, user))
 		end
@@ -111,7 +125,7 @@ defmodule DoudizhuWeb.RoomChannel do
 		name = socket.assigns[:name]
 		user = socket.assigns[:user]
 		game = GameServer.peek(name)
-		{t, u} = view_user(game, socket.assigns[:user])
+		{t, _} = view_user(game, socket.assigns[:user])
 		if t == "p" do
 			if GameServer.play_cards(name, user, cards) == :error do
 				{:reply, {:error, %{reason: "Cannot play in this way!"}}, socket}
@@ -134,6 +148,16 @@ defmodule DoudizhuWeb.RoomChannel do
 			{:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
 			{:ok, game} -> broadcast!(socket, "new_text", game)
 				{:noreply, socket}
+		end
+	end
+
+	def handle_in("switch", %{"player" => player}, socket) do
+		name = socket.assigns[:name]
+		user = socket.assigns[:user]
+		case GameServer.set_player(name, user, player) do
+			{:error, reason} -> {:reply, {:error, %{reason: reason}}, socket}
+			{:ok, game} -> {:reply, {:ok, 
+				%{"game" => Game.client_view(game, player)}}, socket}
 		end
 	end
 
@@ -174,7 +198,10 @@ defmodule DoudizhuWeb.RoomChannel do
 		if Map.has_key?(p, user) do
 			{"p", user}
 		else 
-			{"o", game[:observers][user]}
+			case Chat.get_player(game, user) do
+				{:error, _} -> {"undefine", nil}
+				{:ok, u} -> {"o", u}
+			end
 		end
 	end
 

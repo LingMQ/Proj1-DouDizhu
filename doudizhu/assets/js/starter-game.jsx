@@ -27,6 +27,8 @@ class Game extends React.Component {
 			ob: false,
 			readyButton: false,
 			bidLandlordButton: false,
+			beginGame: false,
+			endGame: false,
 		};
 		
 		this.channel.join()
@@ -39,9 +41,9 @@ class Game extends React.Component {
 		this.channel.on("user_joined", this.get_view.bind(this));
 		this.channel.on("user_ready", this.get_view.bind(this));
 		this.channel.on("user_bid", this.get_view.bind(this));
-		this.channel.on("start_bid", this.get_view.bind(this));
+		this.channel.on("start_bid", this.get_state_bid_view.bind(this));
 		this.channel.on("update", this.get_view.bind(this));
-		this.channel.on("terminate", this.get_view.bind(this));
+		this.channel.on("terminate", this.get_terminate_view.bind(this));
 
 		this.channel.on("new_msg", this.new_msg.bind(this));
 	}
@@ -59,7 +61,7 @@ class Game extends React.Component {
 	init_ob(view) {
 		if (view.game) {
 			this.setState(view.game);
-			this.setState({ob: true})
+			this.setState({ob: true, text: view.text})
 		}
 	}
 
@@ -72,6 +74,17 @@ class Game extends React.Component {
 		} else {
 			this.setState(view.game);
 		}
+	}
+
+	get_terminate_view(view) {
+		this.get_view(view)
+		this.setState({endGame: true, beginGame: false})
+		window.alert("The winner is " + view.winner);
+	}
+
+	get_state_bid_view(view) {
+		this.get_view(view)
+		this.setState({beginGame: true});
 	}
 
 	tick() {
@@ -93,6 +106,11 @@ class Game extends React.Component {
 
 	new_msg(msg) {
 		this.setState(msg);
+	}
+
+	switch_view(player) {
+		this.channel.push("switch", {player: player})
+					.receive("ok", (view) => (this.setState(view.game)))
 	}
 
 	ready() {
@@ -145,10 +163,18 @@ class Game extends React.Component {
 			</div>
 			<div className="row">
 				<div className="column" float="left">
-					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.left} />
+					<OpponentDealCard renderCards={this.renderCards.bind(this)} 
+						data={this.state.left} 
+						ob={this.state.ob}
+						beginGame={this.state.beginGame}
+						switch={this.switch_view.bind(this)}/>
 				</div>
 				<div className="column" float="right">
-					<OpponentDealCard renderCards={this.renderCards.bind(this)} data={this.state.right} />
+					<OpponentDealCard renderCards={this.renderCards.bind(this)} 
+						data={this.state.right} 
+						ob={this.state.ob} 
+						beginGame={this.state.beginGame}
+						switch={this.switch_view.bind(this)}/>
 				</div>
 				<Chat display={this.state.ob} data={this.state.text}
 					  onKeyPress={this.submit.bind(this)}/>
@@ -195,24 +221,76 @@ function Chat(props) {
 			</div>
 			);
 	} else {
-		return <div></div>
+		return <div/>
 	}
 }
 
 function OpponentDealCard(props) {
-	let cards = props.renderCards(props.data.last)
-	let text = ""
+	let cards = props.renderCards(props.data.last);
+	let p = props.data.player;
+	let text = "";
+	let cardLeftText = ""
+
 	if (props.data.ready) {
-		text = props.data.player + "is Ready!"
+		text = props.data.player + " is Ready!"
+	}
+
+	if (props.beginGame) {
+		cardLeftText = "Card Left: " +  props.data.leftC
+	}
+
+
+
+	let lastC = props.data.last
+	if (lastC === undefined) {
+		return (
+			<div>
+				<Player ob={props.ob} switch={props.switch} p={p}/>
+				<p className="player"> Score: {props.data.total}</p>
+				<p>{text}</p>
+			</div>
+		);
+	} else if (lastC.length === 0) {
+		if (props.beginGame) {
+			let passCard = (require("./card").dict)["pass"]
+			return (
+				<div>
+					<Player ob={props.ob} switch={props.switch} p={p}/>
+					<p className="player"> Score: {props.data.total}</p>
+					<p> {cardLeftText} </p>
+					<img src={passCard} width="58" height="108"/>
+				</div>
+			);
+		} else {
+			return (
+				<div>
+					<Player ob={props.ob} switch={props.switch} p={p}/>
+					<p className="player"> Score: {props.data.total}</p>
+					<p> {cardLeftText} </p>
+					<p>{text}</p>
+				</div>
+			);
+		}
 	}
 	return (
 		<div>
-			<p className="player"> Player: {props.data.player}</p>
+			<Player ob={props.ob} switch={props.switch} p={p}/>
 			<p className="player"> Score: {props.data.total}</p>
+			<p> {cardLeftText} </p>
 			<p>{text}</p>
 			<p>{cards}</p>
 		</div>
 	);
+
+}
+
+function Player(props) {
+	if (props.ob) {
+		return (<p><button className="switchButton"
+							 onClick={() => props.switch(props.p)}>Watch {props.p}</button></p>);
+	} else {
+		return (<p className="player"> Player: {props.p}</p>);
+	}
 }
 
 function MyDealCard(props) {

@@ -94,6 +94,12 @@
     border-color: orchid;
 }
 
+.switchButton {
+    position: relative;
+    background-color: mediumpurple;
+    border-color: mediumpurple;
+}
+
 .firstLineInfo {
     color: #322E29;
     font-family: Kefa;

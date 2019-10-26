@@ -146,7 +146,10 @@ defmodule Doudizhu.Game do
       {^player, _} -> {:error, game}
       _ -> 
         # next round, shift current player
+        index = game[:players][player][:index]
+        last = List.replace_at(state[:last], index, [])
         state = %{state | current_player: next_player(game[:players], player),
+                          last: last,
                           current_round: state[:current_round] + 1}
         {:ok, Map.put(game, :state, state)}
     end
@@ -204,6 +207,29 @@ defmodule Doudizhu.Game do
     end
   end
 
+  def not_playing(game) do
+    if Map.has_key?(game, :state) do
+      game
+      |> Map.get(:state)
+      |> Map.get(:hands)
+      |> Enum.find_index(&Enum.empty?/1)
+      |> is_nil
+    else
+      true
+    end
+  end
+
+  @doc """
+  Given the seat number(0, 1, 2) of a player, return its name.
+  """
+  def get_player(game, index) do
+    case Enum.find(game[:players], 
+      fn {_, v} -> v[:index] == index end) do
+      nil -> nil
+      {k, _} -> k
+    end
+  end
+
   defp cv_helper(game, player) do
     if player == nil do
       %{player: nil, last: [], total: 0}
@@ -213,11 +239,15 @@ defmodule Doudizhu.Game do
         nil -> []
         s -> s[:last] |> Enum.at(p[:index])
       end
-      %{player: player, last: last, total: p[:total], ready: p[:ready]}
+      l = case Map.get(game, :state) do
+        nil -> 0
+        s -> s[:hands] |> Enum.at(p[:index]) |> length()
+      end
+      %{player: player, last: last, total: p[:total], ready: p[:ready], leftC: l}
     end
   end
 
-  def cv_state_trans(game, player) do
+  defp cv_state_trans(game, player) do
     case Map.get(game, :state) do
       nil -> %{
         landlord: nil, 
@@ -240,7 +270,6 @@ defmodule Doudizhu.Game do
   # %{index: , ready: , total:}
   defp update_score(winner, info, base, landlord) do
     base = if winner != landlord, do: -base, else: base
-    |> IO.inspect
     case info[:index] do
       ^landlord -> %{index: landlord, 
                     ready: false, 
@@ -322,7 +351,6 @@ defmodule Doudizhu.Game do
     |> Enum.at(index)
     |> (&(&1 -- cards)).()
     |> (&(List.replace_at(state[:hands], index, &1))).()
-    |> IO.inspect
     last = List.replace_at(state[:last], index, cards)
     base = case feature do
       :rocket -> 2 * state[:base]

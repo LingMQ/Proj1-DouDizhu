@@ -2,7 +2,7 @@ defmodule Doudizhu.Chat do
 
 	def new do
 		%{
-			observers: %{}, # ob => players
+			observers: %{}, # ob => seat
 			history: [] # 2d array [ob, text]
 		}
 	end
@@ -14,7 +14,10 @@ defmodule Doudizhu.Chat do
 	def add_observer(game, ob) do
 		if !Map.has_key?(game[:players], ob) do
 			obs = game[:observers]
-			|> Map.put(ob, game[:players] |> Map.keys |> hd)
+			|> Map.put(ob, game[:players] 
+				|> Map.values 
+				|> hd 
+				|> Map.get(:index))
 			{:ok, %{game | observers: obs}}
 		else
 			{:error, "Duplicate name!"}
@@ -29,18 +32,27 @@ defmodule Doudizhu.Chat do
 		end
 	end
 
+	@doc """
+	Get the name of the player the given observer is watching.
+	"""
 	def get_player(game, ob) do
 		if Map.has_key?(game[:observers], ob) do
-			{:ok, game[:observers][ob]}
+			index = game[:observers][ob]
+			{:ok, Doudizhu.Game.get_player(game, index)}
 		else
 			{:error, "No such observer!"}
 		end
 	end
 
+	@doc """
+	Change the player which the given observer is watching, the player is
+	actually focus on the seat instead of the player.
+	"""
 	def set_player(game, ob, p) do
 		obs = game[:observers]
+		index = game[:players][p][:index]
 		if Map.has_key?(obs, ob) do
-			{:ok, %{game | observers: Map.put(obs, ob, p)}}
+			{:ok, %{game | observers: Map.put(obs, ob, index)}}
 		else
 			{:error, "No such observer!"}
 		end

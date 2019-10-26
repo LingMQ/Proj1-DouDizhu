@@ -54,6 +54,7 @@ const dict = {
     51: "https://i.ibb.co/8jQn6jN/49.jpg",
     52: "https://i.ibb.co/gFmW0FS/53.jpg", // little joker
     53: "https://i.ibb.co/MZQqbXw/54.jpg", // big joker
+    "pass": "https://i.ibb.co/K9cSJ4w/base5.jpg" // pass card
 }
 
 export {dict};

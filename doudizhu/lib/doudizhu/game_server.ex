@@ -1,4 +1,4 @@
-defmodule Doudizhu.GameServer do
+  defmodule Doudizhu.GameServer do
   use GenServer
 
   alias Doudizhu.BackupAgent
@@ -135,7 +135,7 @@ defmodule Doudizhu.GameServer do
     end
   end
 
-  def handle_call({:add_text, name, ob, p}, _from, game) do
+  def handle_call({:set_p, name, ob, p}, _from, game) do
     case Chat.set_player(game, ob, p) do
       {:error, reason} -> {:reply, {:error, reason}, game}
       {:ok, game} -> BackupAgent.put(name, game)
