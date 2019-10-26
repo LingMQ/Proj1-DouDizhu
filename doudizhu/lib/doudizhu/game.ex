@@ -209,11 +209,12 @@ defmodule Doudizhu.Game do
 
   def not_playing(game) do
     if Map.has_key?(game, :state) do
-      game
+      f = game
       |> Map.get(:state)
       |> Map.get(:hands)
       |> Enum.find_index(&Enum.empty?/1)
       |> is_nil
+      not(f)
     else
       true
     end
