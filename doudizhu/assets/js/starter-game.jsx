@@ -33,7 +33,6 @@ class Game extends React.Component {
 		
 		this.channel.join()
 				.receive("ok", this.init_ob.bind(this))
-				// TODO: display the reason
 				.receive("error", resp => {console.log("Can't join!", resp)});
 
 		
@@ -130,6 +129,7 @@ class Game extends React.Component {
 	}
 
 	onSelect(card) {
+		console.log(card);
 		let s = this.state.selected.concat([]);
 		if (s.includes(card)) {
 			s.splice(s.indexOf(card), 1);
